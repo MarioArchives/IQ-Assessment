@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thomas GIA Practice Test</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p:#0d9488;--pl:#14b8a6;--pd:#0f766e;--pb:#f0fdfa;
+  --navy:#1e3a5f;--navyl:#2d5282;
+  --ok:#16a34a;--okbg:#dcfce7;
+  --err:#dc2626;--errbg:#fee2e2;
+  --bg:#f8fafc;--card:#fff;--txt:#1e293b;--muted:#64748b;--bdr:#e2e8f0;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;line-height:1.5}
+
+/* ── SCREENS ── */
+.screen{display:none}
+.screen.active{display:flex;flex-direction:column;min-height:100vh}
+
+/* ── WELCOME ── */
+#sw{background:linear-gradient(140deg,#0d9488 0%,#0f766e 55%,#1e3a5f 100%);align-items:center;justify-content:center;padding:2rem;text-align:center}
+.w-icon{font-size:3.5rem;margin-bottom:.75rem}
+.w-title{font-size:2.4rem;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:.4rem}
+.w-sub{font-size:1rem;color:rgba(255,255,255,.82);max-width:460px;margin:.5rem auto 2rem}
+.pills{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem}
+.pill{background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.28);padding:.35rem .9rem;border-radius:999px;font-size:.8rem;font-weight:500}
+.toggle-row{display:flex;align-items:center;gap:.75rem;justify-content:center;margin-bottom:1.75rem;flex-wrap:wrap}
+.toggle-row label{color:rgba(255,255,255,.8);font-size:.875rem;font-weight:500}
+.tg{display:flex;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);border-radius:8px;overflow:hidden}
+.tg button{background:none;border:none;color:rgba(255,255,255,.65);padding:.45rem 1.1rem;cursor:pointer;font-size:.85rem;font-weight:500;transition:all .15s}
+.tg button.on{background:rgba(255,255,255,.22);color:#fff}
+.btn-start{background:#fff;color:var(--pd);border:none;padding:.9rem 2.75rem;border-radius:12px;font-size:1.05rem;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.18);transition:all .2s}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.22)}
+.mode-row{display:flex;gap:.35rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:.3rem;margin-bottom:1.5rem}
+.mode-btn{flex:1;padding:.55rem 1.25rem;border:none;border-radius:7px;font-size:.9rem;font-weight:600;cursor:pointer;color:rgba(255,255,255,.55);background:transparent;transition:all .2s}
+.mode-btn.on{background:rgba(255,255,255,.2);color:#fff}
+.res-time{text-align:center;font-size:1rem;color:var(--muted);margin:.25rem 0 1rem;font-weight:600}
+.assess-grid{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin:.75rem 0 .5rem}
+.assess-metric{text-align:center;background:var(--bg);border-radius:10px;padding:.7rem 1.1rem;min-width:86px}
+.assess-val{font-size:1.35rem;font-weight:800;color:var(--navy)}
+.assess-lbl{font-size:.68rem;color:var(--muted);margin-top:.15rem;line-height:1.3}
+.assess-band{text-align:center;font-size:1.05rem;font-weight:700;color:var(--p);margin:.6rem 0 .25rem}
+.assess-note{font-size:.68rem;color:var(--muted);text-align:center;line-height:1.45;max-width:340px;margin:0 auto 1rem}
+.w-stats{display:flex;gap:2.25rem;color:rgba(255,255,255,.72);font-size:.82rem;margin-top:1.75rem;justify-content:center}
+.w-stats strong{display:block;font-size:1.3rem;font-weight:700;color:#fff}
+
+/* ── QUESTION SCREEN ── */
+#sq{flex-direction:column}
+.qhdr{background:#fff;border-bottom:1px solid var(--bdr);padding:.7rem 1.25rem;display:flex;align-items:center;gap:.85rem;position:sticky;top:0;z-index:10}
+.qtag{font-size:.75rem;font-weight:700;color:var(--p);background:var(--pb);padding:.25rem .75rem;border-radius:999px;white-space:nowrap}
+.qprog{flex:1;display:flex;flex-direction:column;gap:.22rem}
+.qprog-txt{font-size:.72rem;color:var(--muted);display:flex;justify-content:space-between}
+.qprog-bar{height:5px;background:var(--bdr);border-radius:3px;overflow:hidden}
+.qprog-fill{height:100%;background:linear-gradient(90deg,var(--p),var(--pl));border-radius:3px;transition:width .3s}
+.qtimer{font-size:.95rem;font-weight:700;color:var(--txt);min-width:2.25rem;text-align:right}
+.qtimer.urgent{color:var(--err);animation:pulse .5s ease infinite alternate}
+@keyframes pulse{to{transform:scale(1.12)}}
+.tbar{height:3px;background:var(--bdr)}
+.tbar-fill{height:100%;background:var(--p);transition:width 1s linear}
+.qbody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.25rem;max-width:660px;margin:0 auto;width:100%}
+.qlabel{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem}
+
+/* ── REASONING ── */
+.r-stmt{background:#eef4fb;border:2px solid #b8d0ea;border-radius:12px;padding:1.4rem 1.75rem;font-size:1.25rem;font-weight:700;text-align:center;color:var(--navy);margin-bottom:1.25rem;width:100%}
+.r-q{font-size:1rem;color:var(--muted);margin-bottom:1.5rem;text-align:center}
+.r-btns{display:flex;gap:.85rem;width:100%}
+.nbtn{flex:1;background:var(--navy);color:#fff;border:none;padding:1rem;border-radius:10px;font-size:1.05rem;font-weight:600;cursor:pointer;transition:all .15s}
+.nbtn:hover:not(:disabled){background:var(--navyl);transform:translateY(-1px)}
+
+/* ── PERCEPTUAL ── */
+.perc-wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1.75rem;width:100%;max-width:380px}
+.perc-col{display:flex;flex-direction:column;align-items:center;gap:.1rem}
+.pc-top{font-size:2.4rem;font-weight:900;color:var(--navy);width:3.2rem;height:3.4rem;display:flex;align-items:center;justify-content:center}
+.pc-bot{font-size:2.4rem;font-weight:900;color:var(--navyl);width:3.2rem;height:3.4rem;display:flex;align-items:center;justify-content:center}
+.count-btns{display:flex;gap:.5rem}
+.cbtn{background:var(--navy);color:#fff;border:none;width:3rem;height:3rem;border-radius:8px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:all .15s}
+.cbtn:hover:not(:disabled){background:var(--navyl);transform:translateY(-1px)}
+
+/* ── NUMBER ── */
+.num-btns{display:flex;gap:1rem;margin-top:.5rem}
+.numbtn{background:var(--navy);color:#fff;border:none;padding:1.25rem 1.75rem;border-radius:10px;font-size:1.8rem;font-weight:800;cursor:pointer;min-width:5rem;transition:all .15s}
+.numbtn:hover:not(:disabled){background:var(--navyl);transform:translateY(-2px)}
+
+/* ── WORD ── */
+.word-btns{display:flex;gap:.75rem;width:100%;justify-content:center;flex-wrap:wrap}
+.wbtn{background:var(--navy);color:#fff;border:none;padding:1.2rem 1.5rem;border-radius:10px;font-size:1.05rem;font-weight:600;cursor:pointer;min-width:5.5rem;transition:all .15s}
+.wbtn:hover:not(:disabled){background:var(--navyl);transform:translateY(-1px)}
+
+/* ── SPATIAL ── */
+.sp-note{font-size:.875rem;color:var(--muted);margin-bottom:1.5rem;text-align:center;line-height:1.6}
+.sp-boxes{display:flex;gap:1.5rem;margin-bottom:2rem}
+.sp-box{background:var(--pb);border:2px solid var(--pl);border-radius:12px;padding:1rem 1.25rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;min-width:90px}
+.sp-sym{font-size:2.5rem;font-weight:900;color:var(--navy);width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-family:'Georgia',serif;line-height:1}
+.sp-div{width:52px;height:2px;background:var(--bdr)}
+.sp-btns{display:flex;gap:.85rem}
+.spbtn{background:var(--navy);color:#fff;border:none;width:3.75rem;height:3.75rem;border-radius:10px;font-size:1.4rem;font-weight:700;cursor:pointer;transition:all .15s}
+.spbtn:hover:not(:disabled){background:var(--navyl);transform:translateY(-1px)}
+
+/* ── ANSWER STATES ── */
+.sel-ok{background:var(--ok)!important;transform:none!important}
+.sel-err{background:var(--err)!important;transform:none!important}
+.reveal-ok{background:var(--ok)!important;box-shadow:0 0 0 3px rgba(22,163,74,.3)!important;transform:none!important}
+button:disabled{opacity:.6;cursor:default}
+
+/* ── FEEDBACK OVERLAY ── */
+.fb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.52);display:flex;align-items:center;justify-content:center;z-index:100;padding:1.25rem;animation:fadein .15s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.fb-card{background:#fff;border-radius:18px;padding:2rem;max-width:420px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.22);animation:slideup .2s ease}
+@keyframes slideup{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+.fb-icon{font-size:2.4rem;margin-bottom:.6rem}
+.fb-title{font-size:1.2rem;font-weight:700;margin-bottom:.5rem}
+.fb-title.ok{color:var(--ok)}.fb-title.err{color:var(--err)}
+.fb-ans{font-size:.9rem;color:var(--muted);margin-bottom:.85rem;padding:.65rem .9rem;background:var(--bg);border-radius:8px;text-align:left}
+.fb-exp{font-size:.85rem;color:var(--muted);line-height:1.65;margin-bottom:1.5rem;text-align:left}
+.btn-next{background:var(--p);color:#fff;border:none;padding:.85rem 1.5rem;border-radius:10px;font-size:.975rem;font-weight:600;cursor:pointer;width:100%;transition:all .15s}
+.btn-next:hover{background:var(--pd)}
+
+/* ── RESULTS ── */
+#sr{align-items:center;justify-content:center;padding:2rem}
+.res-card{background:#fff;border-radius:20px;padding:2.25rem;max-width:540px;width:100%;box-shadow:0 4px 28px rgba(0,0,0,.09)}
+.res-title{font-size:1.65rem;font-weight:800;margin-bottom:.2rem}
+.res-sub{color:var(--muted);margin-bottom:2rem}
+.score-ring{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--pd));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 2rem;color:#fff}
+.ring-pct{font-size:2rem;font-weight:800;line-height:1}
+.ring-lbl{font-size:.72rem;opacity:.85}
+.sec-scores{display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem}
+.ssr{display:flex;flex-direction:column;gap:.3rem}
+.ssr-hdr{display:flex;justify-content:space-between;font-size:.85rem}
+.ssr-name{font-weight:600}.ssr-val{color:var(--muted)}
+.ssr-bar{height:8px;background:var(--bdr);border-radius:4px;overflow:hidden}
+.ssr-fill{height:100%;border-radius:4px;transition:width .8s ease}
+.res-msg{background:var(--pb);border-radius:10px;padding:1rem;font-size:.875rem;color:var(--pd);margin-bottom:1.5rem;font-weight:500}
+.res-acts{display:flex;gap:.75rem}
+.btn-restart{flex:1;background:var(--p);color:#fff;border:none;padding:.875rem;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-restart:hover{background:var(--pd)}
+
+@media(max-width:480px){
+  .w-title{font-size:1.9rem}
+  .num-btns{gap:.6rem}.numbtn{padding:1rem 1.25rem;font-size:1.5rem}
+  .sp-boxes{gap:.85rem}.sp-sym{font-size:2rem;width:48px;height:48px}
+}
+</style>
+</head>
+<body>
+
+<!-- WELCOME -->
+<div id="sw" class="screen active">
+  <div class="w-icon">🧠</div>
+  <h1 class="w-title">Thomas GIA Practice</h1>
+  <p class="w-sub">250 authentic GIA-style questions across all five task types — timed just like the real assessment.</p>
+  <div class="pills">
+    <span class="pill">Task 1 · Reasoning</span>
+    <span class="pill">Task 2 · Perceptual Speed</span>
+    <span class="pill">Task 3 · Number Speed</span>
+    <span class="pill">Task 4 · Word Meaning</span>
+    <span class="pill">Task 5 · Spatial Visualisation</span>
+  </div>
+  <div class="mode-row">
+    <button id="mb-practice" class="mode-btn on" onclick="setMode('practice')">Practice</button>
+    <button id="mb-assess" class="mode-btn" onclick="setMode('assessment')">Assessment</button>
+  </div>
+  <div class="toggle-row" id="timer-row">
+    <label>Timer per question:</label>
+    <div class="tg">
+      <button id="tb-off" onclick="setTimer(0)">Off</button>
+      <button id="tb-10" class="on" onclick="setTimer(10)">10 s</button>
+      <button id="tb-6" onclick="setTimer(6)">6 s</button>
+    </div>
+  </div>
+  <button class="btn-start" id="btn-start" onclick="startTest()">Start Practice Test →</button>
+  <div class="w-stats">
+    <div><strong>250</strong>Questions</div>
+    <div><strong>5</strong>Task Types</div>
+    <div><strong>~10 min</strong>Estimated</div>
+  </div>
+</div>
+
+<!-- QUESTION -->
+<div id="sq" class="screen">
+  <div class="qhdr">
+    <span class="qtag" id="qtag">Task 1: Reasoning</span>
+    <div class="qprog">
+      <div class="qprog-txt"><span id="qpt">Q1 of 10</span><span id="qsc">Score: 0/0</span></div>
+      <div class="qprog-bar"><div class="qprog-fill" id="qpf" style="width:0%"></div></div>
+    </div>
+    <div class="qtimer" id="qtmr"></div>
+  </div>
+  <div class="tbar"><div class="tbar-fill" id="tbf" style="width:100%"></div></div>
+  <div class="qbody" id="qbody"></div>
+</div>
+
+<!-- RESULTS -->
+<div id="sr" class="screen">
+  <div class="res-card">
+    <h2 class="res-title" id="res-title">Practice Complete!</h2>
+    <p class="res-sub">Here's how you performed across all 5 tasks</p>
+    <div class="score-ring"><div class="ring-pct" id="rpct">—</div><div class="ring-lbl">Correct</div></div>
+    <p class="res-time" id="res-time" style="display:none"></p>
+    <div id="res-assess" style="display:none">
+      <div class="assess-grid">
+        <div class="assess-metric">
+          <div class="assess-val" id="res-pace">—</div>
+          <div class="assess-lbl">sec per<br>question</div>
+        </div>
+        <div class="assess-metric">
+          <div class="assess-val" id="res-adj">—</div>
+          <div class="assess-lbl">time-adjusted<br>accuracy</div>
+        </div>
+        <div class="assess-metric">
+          <div class="assess-val" id="res-gia">—</div>
+          <div class="assess-lbl">GIA score<br>estimate</div>
+        </div>
+      </div>
+      <div class="assess-band" id="res-band"></div>
+      <p class="assess-note">Accuracy is adjusted for pace using the log-linear time-penalty model from speeded intelligence test research (~9% drop per 2× slower than GIA benchmark of 8 s/q). GIA estimate is normed to mean 100, SD 15.</p>
+    </div>
+    <div class="sec-scores" id="rscores"></div>
+    <div class="res-msg" id="rmsg"></div>
+    <div class="res-acts">
+      <button class="btn-restart" onclick="location.reload()">Try Again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  DATA
+// ─────────────────────────────────────────────
+const SECTIONS = [{"id":"reasoning","name":"Reasoning","tag":"Task 1: Reasoning","type":"reasoning","color":"#3b82f6","questions":[{"stmt":"Carlos is taller than Mei","q":"Who is shorter?","opts":["Carlos","Mei"],"ans":1,"exp":"Carlos is taller, so Mei is the shorter one."},{"stmt":"Amara is not as fast as Dmitri","q":"Who is faster?","opts":["Amara","Dmitri"],"ans":1,"exp":"Not as fast means slower. Dmitri is faster."},{"stmt":"Lena is braver than Kofi","q":"Who is more fearful?","opts":["Lena","Kofi"],"ans":1,"exp":"Lena is braver, so Kofi is more fearful."},{"stmt":"Omar is not as happy as Yuki","q":"Who is sadder?","opts":["Omar","Yuki"],"ans":0,"exp":"Not as happy means Omar is sadder than Yuki."},{"stmt":"Fatima is brighter than Sven","q":"Who is duller?","opts":["Fatima","Sven"],"ans":1,"exp":"Fatima is brighter, so Sven is the duller one."},{"stmt":"Jin is not as strong as Amelia","q":"Who is weaker?","opts":["Jin","Amelia"],"ans":0,"exp":"Not as strong means Jin is weaker than Amelia."},{"stmt":"Ravi is more patient than Ingrid","q":"Who is more impatient?","opts":["Ravi","Ingrid"],"ans":1,"exp":"Ravi is more patient, so Ingrid is more impatient."},{"stmt":"Nadia is not as generous as Tomás","q":"Who is stingier?","opts":["Nadia","Tomás"],"ans":0,"exp":"Not as generous means Nadia is stingier than Tomás."},{"stmt":"Elias is more confident than Priya","q":"Who is more timid?","opts":["Elias","Priya"],"ans":1,"exp":"Elias is more confident, so Priya is more timid."},{"stmt":"Chioma is not as honest as Rafael","q":"Who is more deceitful?","opts":["Chioma","Rafael"],"ans":0,"exp":"Not as honest means Chioma is more deceitful than Rafael."},{"stmt":"Marco is louder than Aisha","q":"Who is quieter?","opts":["Marco","Aisha"],"ans":1,"exp":"Marco is louder, so Aisha is the quieter one."},{"stmt":"Hana is not as calm as Sergio","q":"Who is more anxious?","opts":["Hana","Sergio"],"ans":0,"exp":"Not as calm means Hana is more anxious than Sergio."},{"stmt":"Tobias is kinder than Yara","q":"Who is crueler?","opts":["Tobias","Yara"],"ans":1,"exp":"Tobias is kinder, so Yara is the crueler one."},{"stmt":"Leila is not as careful as Dimitri","q":"Who is more reckless?","opts":["Leila","Dimitri"],"ans":0,"exp":"Not as careful means Leila is more reckless than Dimitri."},{"stmt":"Samuel is warmer than Nia","q":"Who is colder in personality?","opts":["Samuel","Nia"],"ans":1,"exp":"Samuel is warmer in personality, so Nia is colder."},{"stmt":"Zara is not as tall as Bao","q":"Who is taller?","opts":["Zara","Bao"],"ans":1,"exp":"Not as tall means Bao is taller than Zara."},{"stmt":"Viktor is slower than Adaeze","q":"Who is faster?","opts":["Viktor","Adaeze"],"ans":1,"exp":"Viktor is slower, so Adaeze is faster."},{"stmt":"Miriam is not as brave as Olu","q":"Who is braver?","opts":["Miriam","Olu"],"ans":1,"exp":"Not as brave means Olu is braver than Miriam."},{"stmt":"Diego is happier than Fiona","q":"Who is sadder?","opts":["Diego","Fiona"],"ans":1,"exp":"Diego is happier, so Fiona is sadder."},{"stmt":"Kenji is not as bright as Valentina","q":"Who is duller?","opts":["Kenji","Valentina"],"ans":0,"exp":"Not as bright means Kenji is duller than Valentina."},{"stmt":"Amara is stronger than Luca","q":"Who is stronger?","opts":["Amara","Luca"],"ans":0,"exp":"The statement directly says Amara is stronger."},{"stmt":"Hyun is not as patient as Beatriz","q":"Who is more patient?","opts":["Hyun","Beatriz"],"ans":1,"exp":"Not as patient means Beatriz is more patient than Hyun."},{"stmt":"Kwame is more generous than Sasha","q":"Who is more generous?","opts":["Kwame","Sasha"],"ans":0,"exp":"The statement directly says Kwame is more generous."},{"stmt":"Irina is not as confident as Mateo","q":"Who is more timid?","opts":["Irina","Mateo"],"ans":0,"exp":"Not as confident means Irina is more timid than Mateo."},{"stmt":"Finn is more honest than Layla","q":"Who is more honest?","opts":["Finn","Layla"],"ans":0,"exp":"The statement directly says Finn is more honest."},{"stmt":"Yuna is not as loud as Emeka","q":"Who is louder?","opts":["Yuna","Emeka"],"ans":1,"exp":"Not as loud means Emeka is louder than Yuna."},{"stmt":"Pieter is calmer than Simone","q":"Who is more anxious?","opts":["Pieter","Simone"],"ans":1,"exp":"Pieter is calmer, so Simone is more anxious."},{"stmt":"Anya is not as kind as Jamal","q":"Who is kinder?","opts":["Anya","Jamal"],"ans":1,"exp":"Not as kind means Jamal is kinder than Anya."},{"stmt":"Felix is more careful than Nora","q":"Who is more careful?","opts":["Felix","Nora"],"ans":0,"exp":"The statement directly says Felix is more careful."},{"stmt":"Mei is not as warm as Declan","q":"Who is warmer in personality?","opts":["Mei","Declan"],"ans":1,"exp":"Not as warm means Declan is warmer in personality than Mei."},{"stmt":"Rosa is shorter than Tariq","q":"Who is taller?","opts":["Rosa","Tariq"],"ans":1,"exp":"Rosa is shorter, so Tariq is taller."},{"stmt":"Kasimir is not as slow as Amani","q":"Who is faster?","opts":["Kasimir","Amani"],"ans":0,"exp":"Not as slow means Kasimir is faster than Amani."},{"stmt":"Ingrid is more fearful than Kobi","q":"Who is braver?","opts":["Ingrid","Kobi"],"ans":1,"exp":"Ingrid is more fearful, so Kobi is braver."},{"stmt":"Sora is not as sad as Ezra","q":"Who is happier?","opts":["Sora","Ezra"],"ans":0,"exp":"Not as sad means Sora is happier than Ezra."},{"stmt":"Aditi is duller than Piotr","q":"Who is brighter?","opts":["Aditi","Piotr"],"ans":1,"exp":"Aditi is duller, so Piotr is brighter."},{"stmt":"Marcus is not as weak as Freya","q":"Who is stronger?","opts":["Marcus","Freya"],"ans":0,"exp":"Not as weak means Marcus is stronger than Freya."},{"stmt":"Lena is more impatient than Jiro","q":"Who is more patient?","opts":["Lena","Jiro"],"ans":1,"exp":"Lena is more impatient, so Jiro is more patient."},{"stmt":"Tomás is not as stingy as Camille","q":"Who is more generous?","opts":["Tomás","Camille"],"ans":0,"exp":"Not as stingy means Tomás is more generous than Camille."},{"stmt":"Priya is more timid than Hugo","q":"Who is more confident?","opts":["Priya","Hugo"],"ans":1,"exp":"Priya is more timid, so Hugo is more confident."},{"stmt":"Nadia is not as deceitful as Yusuf","q":"Who is more honest?","opts":["Nadia","Yusuf"],"ans":0,"exp":"Not as deceitful means Nadia is more honest than Yusuf."},{"stmt":"Emeka is quieter than Sonja","q":"Who is louder?","opts":["Emeka","Sonja"],"ans":1,"exp":"Emeka is quieter, so Sonja is louder."},{"stmt":"Aiko is not as anxious as Brendan","q":"Who is calmer?","opts":["Aiko","Brendan"],"ans":0,"exp":"Not as anxious means Aiko is calmer than Brendan."},{"stmt":"Yara is crueler than Mikael","q":"Who is kinder?","opts":["Yara","Mikael"],"ans":1,"exp":"Yara is crueler, so Mikael is kinder."},{"stmt":"Zhen is not as reckless as Amara","q":"Who is more careful?","opts":["Zhen","Amara"],"ans":0,"exp":"Not as reckless means Zhen is more careful than Amara."},{"stmt":"Dmitri is colder in personality than Femi","q":"Who is warmer in personality?","opts":["Dmitri","Femi"],"ans":1,"exp":"Dmitri is colder in personality, so Femi is warmer."},{"stmt":"Chiara is not as short as Kweku","q":"Who is shorter?","opts":["Chiara","Kweku"],"ans":1,"exp":"Not as short means Kweku is shorter than Chiara."},{"stmt":"Rafael is faster than Hana","q":"Who is slower?","opts":["Rafael","Hana"],"ans":1,"exp":"Rafael is faster, so Hana is slower."},{"stmt":"Yuki is not as fearful as Leandro","q":"Who is braver?","opts":["Yuki","Leandro"],"ans":0,"exp":"Not as fearful means Yuki is braver than Leandro."},{"stmt":"Kofi is happier than Olga","q":"Who is happier?","opts":["Kofi","Olga"],"ans":0,"exp":"The statement directly says Kofi is happier."},{"stmt":"Sven is not as dull as Amara","q":"Who is brighter?","opts":["Sven","Amara"],"ans":0,"exp":"Not as dull means Sven is brighter than Amara."}]},{"id":"perceptual","name":"Perceptual Speed","tag":"Task 2: Perceptual Speed","type":"perceptual","color":"#8b5cf6","questions":[{"top":["u","t","l","s"],"bot":["u","T","L","b"],"ans":3,"exp":"u/u ✓  t/T ✓  l/L ✓  s/b ✗ → 3 matching pairs."},{"top":["F","l","g","V"],"bot":["Y","X","g","w"],"ans":1,"exp":"F/Y ✗  l/X ✗  g/g ✓  V/w ✗ → 1 matching pair."},{"top":["H","V","k","y"],"bot":["h","V","K","y"],"ans":4,"exp":"H/h ✓  V/V ✓  k/K ✓  y/y ✓ → 4 matching pairs."},{"top":["u","o","E","i"],"bot":["E","i","Z","T"],"ans":0,"exp":"u/E ✗  o/i ✗  E/Z ✗  i/T ✗ → 0 matching pairs."},{"top":["Y","B","d","e"],"bot":["w","b","P","x"],"ans":1,"exp":"Y/w ✗  B/b ✓  d/P ✗  e/x ✗ → 1 matching pair."},{"top":["V","R","y","i"],"bot":["d","k","y","Q"],"ans":1,"exp":"V/d ✗  R/k ✗  y/y ✓  i/Q ✗ → 1 matching pair."},{"top":["u","j","q","T"],"bot":["U","J","q","t"],"ans":4,"exp":"u/U ✓  j/J ✓  q/q ✓  T/t ✓ → 4 matching pairs."},{"top":["z","j","h","b"],"bot":["Z","j","h","B"],"ans":4,"exp":"z/Z ✓  j/j ✓  h/h ✓  b/B ✓ → 4 matching pairs."},{"top":["q","t","N","g"],"bot":["J","T","N","p"],"ans":2,"exp":"q/J ✗  t/T ✓  N/N ✓  g/p ✗ → 2 matching pairs."},{"top":["h","S","A","c"],"bot":["H","I","d","b"],"ans":1,"exp":"h/H ✓  S/I ✗  A/d ✗  c/b ✗ → 1 matching pair."},{"top":["P","H","Z","n"],"bot":["g","d","E","Z"],"ans":0,"exp":"P/g ✗  H/d ✗  Z/E ✗  n/Z ✗ → 0 matching pairs."},{"top":["K","Z","D","h"],"bot":["K","z","f","H"],"ans":3,"exp":"K/K ✓  Z/z ✓  D/f ✗  h/H ✓ → 3 matching pairs."},{"top":["R","a","c","Y"],"bot":["R","A","p","s"],"ans":2,"exp":"R/R ✓  a/A ✓  c/p ✗  Y/s ✗ → 2 matching pairs."},{"top":["J","N","w","X"],"bot":["J","K","W","x"],"ans":3,"exp":"J/J ✓  N/K ✗  w/W ✓  X/x ✓ → 3 matching pairs."},{"top":["q","F","B","c"],"bot":["Q","f","w","D"],"ans":2,"exp":"q/Q ✓  F/f ✓  B/w ✗  c/D ✗ → 2 matching pairs."},{"top":["S","Q","k","I"],"bot":["s","q","K","i"],"ans":4,"exp":"S/s ✓  Q/q ✓  k/K ✓  I/i ✓ → 4 matching pairs."},{"top":["s","d","c","R"],"bot":["G","s","k","e"],"ans":0,"exp":"s/G ✗  d/s ✗  c/k ✗  R/e ✗ → 0 matching pairs."},{"top":["Z","u","q","A"],"bot":["W","D","Q","g"],"ans":1,"exp":"Z/W ✗  u/D ✗  q/Q ✓  A/g ✗ → 1 matching pair."},{"top":["I","Q","P","b"],"bot":["I","Q","p","b"],"ans":4,"exp":"I/I ✓  Q/Q ✓  P/p ✓  b/b ✓ → 4 matching pairs."},{"top":["d","C","W","E"],"bot":["s","b","M","W"],"ans":0,"exp":"d/s ✗  C/b ✗  W/M ✗  E/W ✗ → 0 matching pairs."},{"top":["v","h","d","l"],"bot":["F","k","D","l"],"ans":2,"exp":"v/F ✗  h/k ✗  d/D ✓  l/l ✓ → 2 matching pairs."},{"top":["Z","V","X","H"],"bot":["i","F","z","d"],"ans":0,"exp":"Z/i ✗  V/F ✗  X/z ✗  H/d ✗ → 0 matching pairs."},{"top":["h","A","v","G"],"bot":["h","a","v","G"],"ans":4,"exp":"h/h ✓  A/a ✓  v/v ✓  G/G ✓ → 4 matching pairs."},{"top":["i","F","s","b"],"bot":["I","v","O","n"],"ans":1,"exp":"i/I ✓  F/v ✗  s/O ✗  b/n ✗ → 1 matching pair."},{"top":["a","q","z","r"],"bot":["D","q","z","r"],"ans":3,"exp":"a/D ✗  q/q ✓  z/z ✓  r/r ✓ → 3 matching pairs."},{"top":["k","m","w","j"],"bot":["K","m","P","Z"],"ans":2,"exp":"k/K ✓  m/m ✓  w/P ✗  j/Z ✗ → 2 matching pairs."},{"top":["N","Z","S","t"],"bot":["v","K","P","q"],"ans":0,"exp":"N/v ✗  Z/K ✗  S/P ✗  t/q ✗ → 0 matching pairs."},{"top":["u","T","K","c"],"bot":["i","t","K","c"],"ans":3,"exp":"u/i ✗  T/t ✓  K/K ✓  c/c ✓ → 3 matching pairs."},{"top":["s","G","w","m"],"bot":["I","G","E","m"],"ans":2,"exp":"s/I ✗  G/G ✓  w/E ✗  m/m ✓ → 2 matching pairs."},{"top":["q","o","b","r"],"bot":["q","o","b","r"],"ans":4,"exp":"q/q ✓  o/o ✓  b/b ✓  r/r ✓ → 4 matching pairs."},{"top":["Q","N","r","o"],"bot":["z","n","Q","R"],"ans":1,"exp":"Q/z ✗  N/n ✓  r/Q ✗  o/R ✗ → 1 matching pair."},{"top":["J","H","I","K"],"bot":["C","F","I","K"],"ans":2,"exp":"J/C ✗  H/F ✗  I/I ✓  K/K ✓ → 2 matching pairs."},{"top":["N","M","y","s"],"bot":["n","M","y","r"],"ans":3,"exp":"N/n ✓  M/M ✓  y/y ✓  s/r ✗ → 3 matching pairs."},{"top":["T","h","P","I"],"bot":["A","H","q","I"],"ans":2,"exp":"T/A ✗  h/H ✓  P/q ✗  I/I ✓ → 2 matching pairs."},{"top":["m","S","V","A"],"bot":["M","S","v","A"],"ans":4,"exp":"m/M ✓  S/S ✓  V/v ✓  A/A ✓ → 4 matching pairs."},{"top":["n","I","c","p"],"bot":["n","z","t","B"],"ans":1,"exp":"n/n ✓  I/z ✗  c/t ✗  p/B ✗ → 1 matching pair."},{"top":["a","T","e","h"],"bot":["Y","t","d","H"],"ans":2,"exp":"a/Y ✗  T/t ✓  e/d ✗  h/H ✓ → 2 matching pairs."},{"top":["f","J","d","s"],"bot":["F","j","D","p"],"ans":3,"exp":"f/F ✓  J/j ✓  d/D ✓  s/p ✗ → 3 matching pairs."},{"top":["Z","d","S","b"],"bot":["o","Z","s","b"],"ans":2,"exp":"Z/o ✗  d/Z ✗  S/s ✓  b/b ✓ → 2 matching pairs."},{"top":["O","w","e","N"],"bot":["O","w","E","N"],"ans":4,"exp":"O/O ✓  w/w ✓  e/E ✓  N/N ✓ → 4 matching pairs."},{"top":["y","O","S","t"],"bot":["K","a","r","T"],"ans":1,"exp":"y/K ✗  O/a ✗  S/r ✗  t/T ✓ → 1 matching pair."},{"top":["a","Q","G","c"],"bot":["T","Q","G","C"],"ans":3,"exp":"a/T ✗  Q/Q ✓  G/G ✓  c/C ✓ → 3 matching pairs."},{"top":["h","j","V","S"],"bot":["H","J","v","S"],"ans":4,"exp":"h/H ✓  j/J ✓  V/v ✓  S/S ✓ → 4 matching pairs."},{"top":["X","r","y","w"],"bot":["f","h","I","S"],"ans":0,"exp":"X/f ✗  r/h ✗  y/I ✗  w/S ✗ → 0 matching pairs."},{"top":["j","a","W","r"],"bot":["C","a","d","R"],"ans":2,"exp":"j/C ✗  a/a ✓  W/d ✗  r/R ✓ → 2 matching pairs."},{"top":["O","K","f","B"],"bot":["O","k","F","d"],"ans":3,"exp":"O/O ✓  K/k ✓  f/F ✓  B/d ✗ → 3 matching pairs."},{"top":["d","R","y","N"],"bot":["u","V","t","H"],"ans":0,"exp":"d/u ✗  R/V ✗  y/t ✗  N/H ✗ → 0 matching pairs."},{"top":["X","D","Y","G"],"bot":["Y","d","C","G"],"ans":2,"exp":"X/Y ✗  D/d ✓  Y/C ✗  G/G ✓ → 2 matching pairs."},{"top":["W","J","O","C"],"bot":["W","J","o","c"],"ans":4,"exp":"W/W ✓  J/J ✓  O/o ✓  C/c ✓ → 4 matching pairs."},{"top":["s","j","O","D"],"bot":["P","J","O","D"],"ans":3,"exp":"s/P ✗  j/J ✓  O/O ✓  D/D ✓ → 3 matching pairs."}]},{"id":"number","name":"Number Speed & Accuracy","tag":"Task 3: Number Speed","type":"number","color":"#f59e0b","questions":[{"nums":[2,5,9],"ans":2,"exp":"Middle = 5. |9−5| = 4, |5−2| = 3. The number 9 is furthest."},{"nums":[4,6,1],"ans":2,"exp":"Middle = 4. |6−4| = 2, |4−1| = 3. The number 1 is furthest."},{"nums":[9,3,7],"ans":1,"exp":"Middle = 7. |9−7| = 2, |7−3| = 4. The number 3 is furthest."},{"nums":[1,8,3],"ans":1,"exp":"Middle = 3. |8−3| = 5, |3−1| = 2. The number 8 is furthest."},{"nums":[9,4,2],"ans":0,"exp":"Middle = 4. |9−4| = 5, |4−2| = 2. The number 9 is furthest."},{"nums":[6,1,8],"ans":1,"exp":"Middle = 6. |8−6| = 2, |6−1| = 5. The number 1 is furthest."},{"nums":[2,6,9],"ans":0,"exp":"Middle = 6. |9−6| = 3, |6−2| = 4. The number 2 is furthest."},{"nums":[5,7,1],"ans":2,"exp":"Middle = 5. |7−5| = 2, |5−1| = 4. The number 1 is furthest."},{"nums":[9,3,5],"ans":0,"exp":"Middle = 5. |9−5| = 4, |5−3| = 2. The number 9 is furthest."},{"nums":[1,9,4],"ans":1,"exp":"Middle = 4. |9−4| = 5, |4−1| = 3. The number 9 is furthest."},{"nums":[78,35,12],"ans":0,"exp":"Middle = 35. |78−35| = 43, |35−12| = 23. The number 78 is furthest."},{"nums":[45,21,67],"ans":1,"exp":"Middle = 45. |67−45| = 22, |45−21| = 24. The number 21 is furthest."},{"nums":[10,33,55],"ans":0,"exp":"Middle = 33. |55−33| = 22, |33−10| = 23. The number 10 is furthest."},{"nums":[50,72,14],"ans":2,"exp":"Middle = 50. |72−50| = 22, |50−14| = 36. The number 14 is furthest."},{"nums":[90,23,41],"ans":0,"exp":"Middle = 41. |90−41| = 49, |41−23| = 18. The number 90 is furthest."},{"nums":[15,60,38],"ans":0,"exp":"Middle = 38. |60−38| = 22, |38−15| = 23. The number 15 is furthest."},{"nums":[88,44,22],"ans":0,"exp":"Middle = 44. |88−44| = 44, |44−22| = 22. The number 88 is furthest."},{"nums":[30,11,70],"ans":2,"exp":"Middle = 30. |70−30| = 40, |30−11| = 19. The number 70 is furthest."},{"nums":[25,47,95],"ans":2,"exp":"Middle = 47. |95−47| = 48, |47−25| = 22. The number 95 is furthest."},{"nums":[29,75,13],"ans":1,"exp":"Middle = 29. |75−29| = 46, |29−13| = 16. The number 75 is furthest."},{"nums":[380,102,250],"ans":1,"exp":"Middle = 250. |380−250| = 130, |250−102| = 148. The number 102 is furthest."},{"nums":[150,420,300],"ans":0,"exp":"Middle = 300. |420−300| = 120, |300−150| = 150. The number 150 is furthest."},{"nums":[260,110,490],"ans":2,"exp":"Middle = 260. |490−260| = 230, |260−110| = 150. The number 490 is furthest."},{"nums":[280,480,120],"ans":1,"exp":"Middle = 280. |480−280| = 200, |280−120| = 160. The number 480 is furthest."},{"nums":[560,140,310],"ans":0,"exp":"Middle = 310. |560−310| = 250, |310−140| = 170. The number 560 is furthest."},{"nums":[220,650,370],"ans":1,"exp":"Middle = 370. |650−370| = 280, |370−220| = 150. The number 650 is furthest."},{"nums":[700,400,160],"ans":0,"exp":"Middle = 400. |700−400| = 300, |400−160| = 240. The number 700 is furthest."},{"nums":[290,130,410],"ans":1,"exp":"Middle = 290. |410−290| = 120, |290−130| = 160. The number 130 is furthest."},{"nums":[5,15,45],"ans":2,"exp":"Middle = 15. |45−15| = 30, |15−5| = 10. The number 45 is furthest."},{"nums":[18,30,3],"ans":2,"exp":"Middle = 18. |30−18| = 12, |18−3| = 15. The number 3 is furthest."},{"nums":[50,7,20],"ans":0,"exp":"Middle = 20. |50−20| = 30, |20−7| = 13. The number 50 is furthest."},{"nums":[2,40,11],"ans":1,"exp":"Middle = 11. |40−11| = 29, |11−2| = 9. The number 40 is furthest."},{"nums":[60,22,6],"ans":0,"exp":"Middle = 22. |60−22| = 38, |22−6| = 16. The number 60 is furthest."},{"nums":[19,4,55],"ans":2,"exp":"Middle = 19. |55−19| = 36, |19−4| = 15. The number 55 is furthest."},{"nums":[8,25,70],"ans":2,"exp":"Middle = 25. |70−25| = 45, |25−8| = 17. The number 70 is furthest."},{"nums":[12,35,1],"ans":1,"exp":"Middle = 12. |35−12| = 23, |12−1| = 11. The number 35 is furthest."},{"nums":[80,9,28],"ans":0,"exp":"Middle = 28. |80−28| = 52, |28−9| = 19. The number 80 is furthest."},{"nums":[5,65,17],"ans":1,"exp":"Middle = 17. |65−17| = 48, |17−5| = 12. The number 65 is furthest."},{"nums":[300,120,45],"ans":0,"exp":"Middle = 120. |300−120| = 180, |120−45| = 75. The number 300 is furthest."},{"nums":[90,30,250],"ans":2,"exp":"Middle = 90. |250−90| = 160, |90−30| = 60. The number 250 is furthest."},{"nums":[55,150,400],"ans":2,"exp":"Middle = 150. |400−150| = 250, |150−55| = 95. The number 400 is furthest."},{"nums":[200,500,70],"ans":1,"exp":"Middle = 200. |500−200| = 300, |200−70| = 130. The number 500 is furthest."},{"nums":[350,40,110],"ans":0,"exp":"Middle = 110. |350−110| = 240, |110−40| = 70. The number 350 is furthest."},{"nums":[60,450,180],"ans":1,"exp":"Middle = 180. |450−180| = 270, |180−60| = 120. The number 450 is furthest."},{"nums":[220,80,25],"ans":0,"exp":"Middle = 80. |220−80| = 140, |80−25| = 55. The number 220 is furthest."},{"nums":[100,35,280],"ans":2,"exp":"Middle = 100. |280−100| = 180, |100−35| = 65. The number 280 is furthest."},{"nums":[50,140,380],"ans":2,"exp":"Middle = 140. |380−140| = 240, |140−50| = 90. The number 380 is furthest."},{"nums":[170,420,65],"ans":1,"exp":"Middle = 170. |420−170| = 250, |170−65| = 105. The number 420 is furthest."},{"nums":[99,7,42],"ans":0,"exp":"Middle = 42. |99−42| = 57, |42−7| = 35. The number 99 is furthest."},{"nums":[3,80,61],"ans":0,"exp":"Middle = 61. |80−61| = 19, |61−3| = 58. The number 3 is furthest."}]},{"id":"word","name":"Word Meaning","tag":"Task 4: Word Meaning","type":"word","color":"#10b981","questions":[{"words":["Frigid","Halt","Stop"],"ans":0,"exp":"'Halt' and 'Stop' are synonyms. 'Frigid' is the odd one out."},{"words":["Barren","Above","Below"],"ans":0,"exp":"'Above' and 'Below' are opposites. 'Barren' is the odd one out."},{"words":["Carpet","Ancient","Modern"],"ans":0,"exp":"'Ancient' and 'Modern' are opposites. 'Carpet' is the odd one out."},{"words":["Dusk","Brave","Cowardly"],"ans":0,"exp":"'Brave' and 'Cowardly' are opposites. 'Dusk' is the odd one out."},{"words":["Pebble","Elated","Depressed"],"ans":0,"exp":"'Elated' and 'Depressed' are opposites. 'Pebble' is the odd one out."},{"words":["Candle","Zenith","Nadir"],"ans":0,"exp":"'Zenith' and 'Nadir' are opposites. 'Candle' is the odd one out."},{"words":["Timber","Frugal","Wasteful"],"ans":0,"exp":"'Frugal' and 'Wasteful' are opposites. 'Timber' is the odd one out."},{"words":["River","Verbose","Concise"],"ans":0,"exp":"'Verbose' and 'Concise' are opposites. 'River' is the odd one out."},{"words":["Glove","Tranquil","Serene"],"ans":0,"exp":"'Tranquil' and 'Serene' are synonyms. 'Glove' is the odd one out."},{"words":["Marble","Weary","Exhausted"],"ans":0,"exp":"'Weary' and 'Exhausted' are synonyms. 'Marble' is the odd one out."},{"words":["Fence","Obscure","Lucid"],"ans":0,"exp":"'Obscure' and 'Lucid' are opposites. 'Fence' is the odd one out."},{"words":["Button","Arid","Parched"],"ans":0,"exp":"'Arid' and 'Parched' are synonyms. 'Button' is the odd one out."},{"words":["Lantern","Garrulous","Loquacious"],"ans":0,"exp":"'Garrulous' and 'Loquacious' are synonyms. 'Lantern' is the odd one out."},{"words":["Vessel","Malevolent","Benevolent"],"ans":0,"exp":"'Malevolent' and 'Benevolent' are opposites. 'Vessel' is the odd one out."},{"words":["Gravel","Placid","Turbulent"],"ans":0,"exp":"'Placid' and 'Turbulent' are opposites. 'Gravel' is the odd one out."},{"words":["Shallow","Summit","Base"],"ans":0,"exp":"'Summit' and 'Base' are opposites. 'Shallow' is the odd one out."},{"words":["Crimson","Nimble","Agile"],"ans":0,"exp":"'Nimble' and 'Agile' are synonyms. 'Crimson' is the odd one out."},{"words":["Saddle","Spurious","Genuine"],"ans":0,"exp":"'Spurious' and 'Genuine' are opposites. 'Saddle' is the odd one out."},{"words":["Tunnel","Opaque","Transparent"],"ans":0,"exp":"'Opaque' and 'Transparent' are opposites. 'Tunnel' is the odd one out."},{"words":["Cobalt","Meek","Humble"],"ans":0,"exp":"'Meek' and 'Humble' are synonyms. 'Cobalt' is the odd one out."},{"words":["Begin","Tepid","Start"],"ans":1,"exp":"'Begin' and 'Start' are synonyms. 'Tepid' is the odd one out."},{"words":["Swift","Ladder","Fast"],"ans":1,"exp":"'Swift' and 'Fast' are synonyms. 'Ladder' is the odd one out."},{"words":["Vast","Pencil","Tiny"],"ans":1,"exp":"'Vast' and 'Tiny' are opposites. 'Pencil' is the odd one out."},{"words":["Bold","Carpet","Timid"],"ans":1,"exp":"'Bold' and 'Timid' are opposites. 'Carpet' is the odd one out."},{"words":["Ample","Gust","Scarce"],"ans":1,"exp":"'Ample' and 'Scarce' are opposites. 'Gust' is the odd one out."},{"words":["Rigid","Shovel","Flexible"],"ans":1,"exp":"'Rigid' and 'Flexible' are opposites. 'Shovel' is the odd one out."},{"words":["Jovial","Pebble","Cheerful"],"ans":1,"exp":"'Jovial' and 'Cheerful' are synonyms. 'Pebble' is the odd one out."},{"words":["Reckless","Anchor","Careless"],"ans":1,"exp":"'Reckless' and 'Careless' are synonyms. 'Anchor' is the odd one out."},{"words":["Luminous","Barrel","Radiant"],"ans":1,"exp":"'Luminous' and 'Radiant' are synonyms. 'Barrel' is the odd one out."},{"words":["Expand","Thorn","Contract"],"ans":1,"exp":"'Expand' and 'Contract' are opposites. 'Thorn' is the odd one out."},{"words":["Frail","Kettle","Sturdy"],"ans":1,"exp":"'Frail' and 'Sturdy' are opposites. 'Kettle' is the odd one out."},{"words":["Cunning","Marble","Crafty"],"ans":1,"exp":"'Cunning' and 'Crafty' are synonyms. 'Marble' is the odd one out."},{"words":["Serene","Clock","Agitated"],"ans":1,"exp":"'Serene' and 'Agitated' are opposites. 'Clock' is the odd one out."},{"words":["Vivid","Pillar","Dull"],"ans":1,"exp":"'Vivid' and 'Dull' are opposites. 'Pillar' is the odd one out."},{"words":["Melancholy","Rope","Gloomy"],"ans":1,"exp":"'Melancholy' and 'Gloomy' are synonyms. 'Rope' is the odd one out."},{"words":["Sparse","Flint","Dense"],"ans":1,"exp":"'Sparse' and 'Dense' are opposites. 'Flint' is the odd one out."},{"words":["Prudent","Canoe","Imprudent"],"ans":1,"exp":"'Prudent' and 'Imprudent' are opposites. 'Canoe' is the odd one out."},{"words":["Conceal","Gravel","Hide"],"ans":1,"exp":"'Conceal' and 'Hide' are synonyms. 'Gravel' is the odd one out."},{"words":["Perilous","Basket","Dangerous"],"ans":1,"exp":"'Perilous' and 'Dangerous' are synonyms. 'Basket' is the odd one out."},{"words":["Elusive","Fence","Obvious"],"ans":1,"exp":"'Elusive' and 'Obvious' are opposites. 'Fence' is the odd one out."},{"words":["Halt","Cold","Stop"],"ans":1,"exp":"'Halt' and 'Stop' are synonyms. 'Cold' is the odd one out."},{"words":["Above","Below","Carpet"],"ans":2,"exp":"'Above' and 'Below' are opposites. 'Carpet' is the odd one out."},{"words":["Arid","Parched","Vibrant"],"ans":2,"exp":"'Arid' and 'Parched' are synonyms. 'Vibrant' is the odd one out."},{"words":["Garrulous","Taciturn","Crimson"],"ans":2,"exp":"'Garrulous' and 'Taciturn' are opposites. 'Crimson' is the odd one out."},{"words":["Luminous","Radiant","Tepid"],"ans":2,"exp":"'Luminous' and 'Radiant' are synonyms. 'Tepid' is the odd one out."},{"words":["Abundant","Scarce","Gravel"],"ans":2,"exp":"'Abundant' and 'Scarce' are opposites. 'Gravel' is the odd one out."},{"words":["Jovial","Cheerful","Pebble"],"ans":2,"exp":"'Jovial' and 'Cheerful' are synonyms. 'Pebble' is the odd one out."},{"words":["Expand","Contract","Button"],"ans":2,"exp":"'Expand' and 'Contract' are opposites. 'Button' is the odd one out."},{"words":["Cunning","Crafty","Lantern"],"ans":2,"exp":"'Cunning' and 'Crafty' are synonyms. 'Lantern' is the odd one out."},{"words":["Frail","Sturdy","Cobalt"],"ans":2,"exp":"'Frail' and 'Sturdy' are opposites. 'Cobalt' is the odd one out."}]},{"id":"spatial","name":"Spatial Visualisation","tag":"Task 5: Spatial Visualisation","type":"spatial","color":"#ef4444","questions":[{"boxes":[["R",0,"Я",0],["Я",90,"R",180]],"ans":0,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and R — mirror images, no match. Answer: 0."},{"boxes":[["R",90,"Я",270],["Я",0,"R",90]],"ans":0,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and R — mirror images, no match. Answer: 0."},{"boxes":[["Я",0,"R",0],["R",180,"Я",270]],"ans":0,"exp":"Box 1: Я and R — mirror images, no match. Box 2: R and Я — mirror images, no match. Answer: 0."},{"boxes":[["R",270,"Я",90],["Я",180,"R",0]],"ans":0,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and R — mirror images, no match. Answer: 0."},{"boxes":[["Я",90,"R",180],["R",0,"Я",90]],"ans":0,"exp":"Box 1: Я and R — mirror images, no match. Box 2: R and Я — mirror images, no match. Answer: 0."},{"boxes":[["R",180,"Я",180],["Я",270,"R",270]],"ans":0,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and R — mirror images, no match. Answer: 0."},{"boxes":[["Я",270,"R",90],["R",90,"Я",0]],"ans":0,"exp":"Box 1: Я and R — mirror images, no match. Box 2: R and Я — mirror images, no match. Answer: 0."},{"boxes":[["R",0,"Я",270],["Я",90,"R",0]],"ans":0,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and R — mirror images, no match. Answer: 0."},{"boxes":[["Я",180,"R",270],["R",270,"Я",180]],"ans":0,"exp":"Box 1: Я and R — mirror images, no match. Box 2: R and Я — mirror images, no match. Answer: 0."},{"boxes":[["R",90,"Я",0],["Я",270,"R",180]],"ans":0,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and R — mirror images, no match. Answer: 0."},{"boxes":[["Я",0,"R",90],["R",180,"Я",270]],"ans":0,"exp":"Box 1: Я and R — mirror images, no match. Box 2: R and Я — mirror images, no match. Answer: 0."},{"boxes":[["R",270,"Я",180],["Я",0,"R",270]],"ans":0,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and R — mirror images, no match. Answer: 0."},{"boxes":[["Я",90,"R",0],["R",0,"Я",180]],"ans":0,"exp":"Box 1: Я and R — mirror images, no match. Box 2: R and Я — mirror images, no match. Answer: 0."},{"boxes":[["R",180,"Я",90],["Я",180,"R",90]],"ans":0,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and R — mirror images, no match. Answer: 0."},{"boxes":[["Я",270,"R",270],["R",90,"Я",90]],"ans":0,"exp":"Box 1: Я and R — mirror images, no match. Box 2: R and Я — mirror images, no match. Answer: 0."},{"boxes":[["R",0,"Я",180],["Я",270,"R",90]],"ans":0,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and R — mirror images, no match. Answer: 0."},{"boxes":[["Я",180,"R",0],["R",270,"Я",0]],"ans":0,"exp":"Box 1: Я and R — mirror images, no match. Box 2: R and Я — mirror images, no match. Answer: 0."},{"boxes":[["R",90,"Я",180],["Я",0,"R",270]],"ans":0,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and R — mirror images, no match. Answer: 0."},{"boxes":[["Я",0,"R",180],["R",0,"Я",90]],"ans":0,"exp":"Box 1: Я and R — mirror images, no match. Box 2: R and Я — mirror images, no match. Answer: 0."},{"boxes":[["R",270,"Я",0],["Я",90,"R",180]],"ans":0,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and R — mirror images, no match. Answer: 0."},{"boxes":[["R",0,"R",90],["Я",0,"R",180]],"ans":1,"exp":"Box 1: R and R (rotated) — same character ✓. Box 2: Я and R — mirror images, no match. Answer: 1."},{"boxes":[["Я",90,"Я",270],["R",0,"Я",0]],"ans":1,"exp":"Box 1: Я and Я (rotated) — same character ✓. Box 2: R and Я — mirror images, no match. Answer: 1."},{"boxes":[["R",180,"Я",90],["R",270,"R",0]],"ans":1,"exp":"Box 1: R and Я — mirror images, no match. Box 2: R and R (rotated) — same character ✓. Answer: 1."},{"boxes":[["Я",0,"R",270],["Я",180,"Я",90]],"ans":1,"exp":"Box 1: Я and R — mirror images, no match. Box 2: Я and Я (rotated) — same character ✓. Answer: 1."},{"boxes":[["R",90,"R",180],["Я",270,"R",0]],"ans":1,"exp":"Box 1: R and R (rotated) — same character ✓. Box 2: Я and R — mirror images, no match. Answer: 1."},{"boxes":[["Я",270,"Я",0],["R",90,"Я",180]],"ans":1,"exp":"Box 1: Я and Я (rotated) — same character ✓. Box 2: R and Я — mirror images, no match. Answer: 1."},{"boxes":[["R",0,"Я",270],["Я",90,"Я",180]],"ans":1,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and Я (rotated) — same character ✓. Answer: 1."},{"boxes":[["Я",180,"R",0],["R",270,"R",90]],"ans":1,"exp":"Box 1: Я and R — mirror images, no match. Box 2: R and R (rotated) — same character ✓. Answer: 1."},{"boxes":[["R",270,"R",270],["Я",0,"R",90]],"ans":1,"exp":"Box 1: R and R — same character ✓. Box 2: Я and R — mirror images, no match. Answer: 1."},{"boxes":[["Я",90,"R",180],["Я",270,"Я",0]],"ans":1,"exp":"Box 1: Я and R — mirror images, no match. Box 2: Я and Я (rotated) — same character ✓. Answer: 1."},{"boxes":[["R",180,"R",270],["R",90,"Я",270]],"ans":1,"exp":"Box 1: R and R (rotated) — same character ✓. Box 2: R and Я — mirror images, no match. Answer: 1."},{"boxes":[["Я",0,"Я",90],["Я",180,"R",0]],"ans":1,"exp":"Box 1: Я and Я (rotated) — same character ✓. Box 2: Я and R — mirror images, no match. Answer: 1."},{"boxes":[["R",0,"Я",180],["Я",270,"Я",90]],"ans":1,"exp":"Box 1: R and Я — mirror images, no match. Box 2: Я and Я (rotated) — same character ✓. Answer: 1."},{"boxes":[["Я",90,"Я",180],["R",180,"Я",270]],"ans":1,"exp":"Box 1: Я and Я (rotated) — same character ✓. Box 2: R and Я — mirror images, no match. Answer: 1."},{"boxes":[["R",270,"Я",90],["R",0,"R",180]],"ans":1,"exp":"Box 1: R and Я — mirror images, no match. Box 2: R and R (rotated) — same character ✓. Answer: 1."},{"boxes":[["Я",0,"R",90],["Я",270,"Я",180]],"ans":1,"exp":"Box 1: Я and R — mirror images, no match. Box 2: Я and Я (rotated) — same character ✓. Answer: 1."},{"boxes":[["R",90,"R",0],["Я",180,"R",270]],"ans":1,"exp":"Box 1: R and R (rotated) — same character ✓. Box 2: Я and R — mirror images, no match. Answer: 1."},{"boxes":[["Я",180,"Я",270],["R",0,"Я",90]],"ans":1,"exp":"Box 1: Я and Я (rotated) — same character ✓. Box 2: R and Я — mirror images, no match. Answer: 1."},{"boxes":[["R",270,"Я",0],["R",90,"R",270]],"ans":1,"exp":"Box 1: R and Я — mirror images, no match. Box 2: R and R (rotated) — same character ✓. Answer: 1."},{"boxes":[["Я",90,"R",270],["Я",0,"Я",90]],"ans":1,"exp":"Box 1: Я and R — mirror images, no match. Box 2: Я and Я (rotated) — same character ✓. Answer: 1."},{"boxes":[["R",0,"R",90],["Я",0,"Я",270]],"ans":2,"exp":"Box 1: R and R (rotated) — same character ✓. Box 2: Я and Я (rotated) — same character ✓. Answer: 2."},{"boxes":[["Я",90,"Я",0],["R",180,"R",270]],"ans":2,"exp":"Box 1: Я and Я (rotated) — same character ✓. Box 2: R and R (rotated) — same character ✓. Answer: 2."},{"boxes":[["R",180,"R",90],["Я",270,"Я",180]],"ans":2,"exp":"Box 1: R and R (rotated) — same character ✓. Box 2: Я and Я (rotated) — same character ✓. Answer: 2."},{"boxes":[["Я",0,"Я",180],["R",90,"R",0]],"ans":2,"exp":"Box 1: Я and Я (rotated) — same character ✓. Box 2: R and R (rotated) — same character ✓. Answer: 2."},{"boxes":[["R",270,"R",180],["Я",90,"Я",0]],"ans":2,"exp":"Box 1: R and R (rotated) — same character ✓. Box 2: Я and Я (rotated) — same character ✓. Answer: 2."},{"boxes":[["Я",180,"Я",90],["R",0,"R",270]],"ans":2,"exp":"Box 1: Я and Я (rotated) — same character ✓. Box 2: R and R (rotated) — same character ✓. Answer: 2."},{"boxes":[["R",90,"R",270],["Я",180,"Я",90]],"ans":2,"exp":"Box 1: R and R (rotated) — same character ✓. Box 2: Я and Я (rotated) — same character ✓. Answer: 2."},{"boxes":[["Я",270,"Я",180],["R",90,"R",90]],"ans":2,"exp":"Box 1: Я and Я (rotated) — same character ✓. Box 2: R and R — same character ✓. Answer: 2."},{"boxes":[["R",0,"R",0],["Я",270,"Я",90]],"ans":2,"exp":"Box 1: R and R — same character ✓. Box 2: Я and Я (rotated) — same character ✓. Answer: 2."},{"boxes":[["Я",90,"Я",270],["R",180,"R",90]],"ans":2,"exp":"Box 1: Я and Я (rotated) — same character ✓. Box 2: R and R (rotated) — same character ✓. Answer: 2."}]}];
+
+// ─────────────────────────────────────────────
+//  GENERATOR DATA
+// ─────────────────────────────────────────────
+const QS_PER_SECTION = 60;
+
+const SYNONYMS = [
+  ['happy','joyful','content','cheerful'],
+  ['sad','gloomy','melancholy','sorrowful'],
+  ['fast','swift','rapid','speedy'],
+  ['slow','sluggish','lethargic','tardy'],
+  ['big','large','vast','enormous'],
+  ['small','tiny','minute','petite'],
+  ['bright','luminous','radiant','gleaming'],
+  ['smart','clever','astute','intelligent'],
+  ['kind','gentle','benevolent','caring'],
+  ['brave','courageous','bold','valiant'],
+  ['calm','serene','tranquil','placid'],
+  ['tired','weary','exhausted','fatigued'],
+  ['genuine','authentic','sincere','real'],
+  ['fake','false','spurious','counterfeit'],
+  ['old','ancient','aged','archaic'],
+  ['dry','arid','parched','desiccated'],
+  ['cunning','crafty','wily','shrewd'],
+  ['reckless','careless','heedless','impetuous'],
+  ['perilous','dangerous','hazardous','treacherous'],
+  ['hidden','concealed','obscured','covert'],
+  ['clear','lucid','obvious','transparent'],
+  ['talkative','garrulous','loquacious','verbose'],
+  ['quiet','reserved','taciturn','reticent'],
+  ['start','begin','commence','initiate'],
+  ['stop','cease','halt','conclude'],
+  ['nimble','agile','spry','lithe'],
+  ['cheerful','jovial','merry','gleeful'],
+  ['dejected','downcast','despondent','forlorn'],
+  ['shrewd','perceptive','astute','discerning'],
+  ['frugal','thrifty','economical','sparing'],
+];
+
+const ANTONYMS = [
+  ['happy','sad'],['fast','slow'],['big','small'],['bright','dark'],
+  ['hot','cold'],['strong','weak'],['brave','fearful'],['calm','agitated'],
+  ['kind','cruel'],['genuine','fake'],['loud','quiet'],['expand','contract'],
+  ['humble','arrogant'],['diligent','lazy'],['optimistic','pessimistic'],
+  ['ancient','modern'],['arid','lush'],['placid','turbulent'],
+  ['obscure','lucid'],['shallow','deep'],['zenith','nadir'],['sparse','dense'],
+  ['elusive','obvious'],['vivid','dull'],['frugal','wasteful'],
+  ['perilous','safe'],['start','stop'],['conceal','reveal'],['rigid','flexible'],
+  ['meek','assertive'],
+];
+
+const FILLERS = [
+  'carpet','marble','pebble','lantern','button','anchor','saddle','kettle',
+  'pillar','candle','tunnel','glove','basket','barrel','gravel','fence',
+  'shovel','thorn','rope','crimson','cobalt','gust','flint','canoe',
+  'timber','vessel','chimney','compass','hammer','shuttle',
+];
+
+const ADJECTIVES = [
+  {pos:'tall',        posQ:'taller',           neg:'short',       negQ:'shorter'},
+  {pos:'heavy',       posQ:'heavier',          neg:'light',       negQ:'lighter'},
+  {pos:'fast',        posQ:'faster',           neg:'slow',        negQ:'slower'},
+  {pos:'strong',      posQ:'stronger',         neg:'weak',        negQ:'weaker'},
+  {pos:'loud',        posQ:'louder',           neg:'quiet',       negQ:'quieter'},
+  {pos:'warm',        posQ:'warmer',           neg:'cold',        negQ:'colder'},
+  {pos:'long',        posQ:'longer',           neg:'short',       negQ:'shorter'},
+  {pos:'old',         posQ:'older',            neg:'young',       negQ:'younger'},
+  {pos:'deep',        posQ:'deeper',           neg:'shallow',     negQ:'shallower'},
+  {pos:'wide',        posQ:'wider',            neg:'narrow',      negQ:'narrower'},
+  {pos:'patient',     posQ:'more patient',     neg:'impatient',   negQ:'more impatient'},
+  {pos:'generous',    posQ:'more generous',    neg:'stingy',      negQ:'stingier'},
+  {pos:'honest',      posQ:'more honest',      neg:'deceitful',   negQ:'more deceitful'},
+  {pos:'confident',   posQ:'more confident',   neg:'timid',       negQ:'more timid'},
+  {pos:'calm',        posQ:'calmer',           neg:'anxious',     negQ:'more anxious'},
+  {pos:'polite',      posQ:'more polite',      neg:'rude',        negQ:'ruder'},
+  {pos:'humble',      posQ:'more humble',      neg:'arrogant',    negQ:'more arrogant'},
+  {pos:'kind',        posQ:'kinder',           neg:'cruel',       negQ:'crueler'},
+  {pos:'loyal',       posQ:'more loyal',       neg:'disloyal',    negQ:'more disloyal'},
+  {pos:'diligent',    posQ:'more diligent',    neg:'lazy',        negQ:'lazier'},
+  {pos:'bright',      posQ:'brighter',         neg:'dull',        negQ:'duller'},
+  {pos:'creative',    posQ:'more creative',    neg:'conventional',negQ:'more conventional'},
+  {pos:'brave',       posQ:'braver',           neg:'fearful',     negQ:'more fearful'},
+  {pos:'happy',       posQ:'happier',          neg:'sad',         negQ:'sadder'},
+  {pos:'cheerful',    posQ:'more cheerful',    neg:'gloomy',      negQ:'gloomier'},
+  {pos:'ambitious',   posQ:'more ambitious',   neg:'complacent',  negQ:'more complacent'},
+  {pos:'decisive',    posQ:'more decisive',    neg:'hesitant',    negQ:'more hesitant'},
+  {pos:'optimistic',  posQ:'more optimistic',  neg:'pessimistic', negQ:'more pessimistic'},
+  {pos:'flexible',    posQ:'more flexible',    neg:'rigid',       negQ:'more rigid'},
+  {pos:'careful',     posQ:'more careful',     neg:'reckless',    negQ:'more reckless'},
+  {pos:'intelligent', posQ:'more intelligent', neg:'foolish',     negQ:'more foolish'},
+  {pos:'curious',     posQ:'more curious',     neg:'incurious',   negQ:'less curious'},
+  {pos:'independent', posQ:'more independent', neg:'dependent',   negQ:'more dependent'},
+  {pos:'energetic',   posQ:'more energetic',   neg:'lethargic',   negQ:'more lethargic'},
+  {pos:'talkative',   posQ:'more talkative',   neg:'reserved',    negQ:'more reserved'},
+];
+
+const NAMES = [
+  'Alice','Ben','Carlos','Diana','Elias','Fatima','George','Hana','Ivan','Jess',
+  'Kofi','Lena','Marco','Nadia','Omar','Priya','Quinn','Ravi','Sara','Tobias',
+  'Uma','Viktor','Wendy','Xiu','Yara','Zara','Amir','Bella','Cyrus','Dani',
+  'Ethan','Fiona','Gus','Hira','Idris','Jana','Kai','Luna','Milo','Nina',
+  'Olga','Pedro','Rea','Stefan','Tara','Uri','Vera','Wren','Xander','Yuna',
+  'Zoe','Amara','Bram','Chioma','Dario','Emi','Felix','Greta','Hugo','Iris',
+];
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function genPerceptual() {
+  const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const rnd = () => alpha[Math.floor(Math.random() * 26)];
+  const top = [];
+  while (top.length < 4) { const l = rnd(); if (!top.includes(l)) top.push(l); }
+  const bot = [];
+  for (let i = 0; i < 4; i++) {
+    if (Math.random() < 0.5) {
+      bot.push(top[i].toLowerCase());
+    } else {
+      let l;
+      do { l = rnd(); } while (l.toLowerCase() === top[i].toLowerCase() || bot.includes(l.toLowerCase()));
+      bot.push(l.toLowerCase());
+    }
+  }
+  const ans = top.filter((t, i) => t.toLowerCase() === bot[i]).length;
+  const exp = top.map((t, i) => `${t}/${bot[i]} ${t.toLowerCase() === bot[i] ? '✓' : '✗'}`).join('  ') + `  → ${ans} pair${ans !== 1 ? 's' : ''}`;
+  return { top, bot, ans, exp };
+}
+
+function genNumber() {
+  let nums, lo, mid, hi, dLo, dHi;
+  do {
+    nums = Array.from({length: 3}, () => Math.floor(Math.random() * 200) + 1);
+    [lo, mid, hi] = [...nums].sort((a, b) => a - b);
+    dLo = mid - lo; dHi = hi - mid;
+  } while (lo === mid || mid === hi || dLo === dHi);
+  const furthest = dHi > dLo ? hi : lo;
+  const ans = nums.indexOf(furthest);
+  const exp = `Middle = ${mid}. |${hi}−${mid}| = ${dHi}, |${lo}−${mid}| = ${dLo}. ${furthest} is furthest.`;
+  return { nums, ans, exp };
+}
+
+function genSpatial() {
+  const PAIRS = [['R','Я'], ['b','d'], ['p','q']];
+  const pair = PAIRS[Math.floor(Math.random() * PAIRS.length)];
+  const degs = [0, 90, 180, 270];
+  const rc = () => pair[Math.floor(Math.random() * 2)];
+  const rd = () => degs[Math.floor(Math.random() * 4)];
+  const boxes = [[rc(), rd(), rc(), rd()], [rc(), rd(), rc(), rd()]];
+  const ans = boxes.filter(b => b[0] === b[2]).length;
+  const exp = boxes.map((b, i) =>
+    `Box ${i+1}: ${b[0]}(${b[1]}°) & ${b[2]}(${b[3]}°) — ${b[0] === b[2] ? 'match ✓' : 'no match ✗'}`
+  ).join('. ') + `. Answer: ${ans}.`;
+  return { boxes, ans, exp };
+}
+
+function genWord() {
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  const useSyn = Math.random() < 0.5;
+  let w1, w2, relType;
+  if (useSyn) {
+    const group = SYNONYMS[Math.floor(Math.random() * SYNONYMS.length)];
+    [w1, w2] = shuffle([...group]);
+    relType = 'synonyms';
+  } else {
+    const pair = ANTONYMS[Math.floor(Math.random() * ANTONYMS.length)];
+    [w1, w2] = Math.random() < 0.5 ? [pair[0], pair[1]] : [pair[1], pair[0]];
+    relType = 'opposites';
+  }
+  const filler = cap(FILLERS[Math.floor(Math.random() * FILLERS.length)]);
+  const ansIdx = Math.floor(Math.random() * 3);
+  const words = [null, null, null];
+  const [posA, posB] = [0, 1, 2].filter(i => i !== ansIdx);
+  [words[posA], words[posB]] = shuffle([cap(w1), cap(w2)]);
+  words[ansIdx] = filler;
+  const exp = `'${words[posA]}' and '${words[posB]}' are ${relType}. '${words[ansIdx]}' is the odd one out.`;
+  return { words, ans: ansIdx, exp };
+}
+
+function genReasoning() {
+  const adj = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
+  const [nameA, nameB] = shuffle([...NAMES]);
+  const negated = Math.random() < 0.5;
+  const aHasMore = !negated;
+  const stmt = negated
+    ? `${nameA} is not as ${adj.pos} as ${nameB}`
+    : `${nameA} is ${adj.posQ} than ${nameB}`;
+  const askPos = Math.random() < 0.5;
+  const q = askPos ? `Who is ${adj.posQ}?` : `Who is ${adj.negQ}?`;
+  const ansName = (askPos === aHasMore) ? nameA : nameB;
+  const ans = ansName === nameA ? 0 : 1;
+  const exp = negated
+    ? (askPos
+        ? `"Not as ${adj.pos}" means ${nameA} has less. So ${nameB} is ${adj.posQ}.`
+        : `"Not as ${adj.pos}" means ${nameA} has less, making ${nameA} ${adj.negQ}.`)
+    : (askPos
+        ? `${nameA} is ${adj.posQ} than ${nameB}, so ${nameA} is ${adj.posQ}.`
+        : `${nameA} is ${adj.posQ} than ${nameB}, so ${nameB} is ${adj.negQ}.`);
+  return { stmt, q, opts: [nameA, nameB], ans, exp };
+}
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let timerSecs = 10, secIdx = 0, qIdx = 0;
+let totalScore = 0, totalDone = 0;
+let sScores = SECTIONS.map(() => ({c:0,t:0}));
+let answered = false, tmrInt = null, timeLeft = 10;
+let currentQ = null;
+let mode = 'practice', sessionStart = 0;
+
+const totalQ = QS_PER_SECTION * SECTIONS.length;
+
+// ─────────────────────────────────────────────
+//  TIMER MODE
+// ─────────────────────────────────────────────
+function setTimer(n) {
+  timerSecs = n;
+  document.querySelectorAll('.tg button').forEach(b => b.classList.remove('on'));
+  document.getElementById(n===0?'tb-off':n===10?'tb-10':'tb-6').classList.add('on');
+}
+
+// ─────────────────────────────────────────────
+//  SCREEN
+// ─────────────────────────────────────────────
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ─────────────────────────────────────────────
+//  START
+// ─────────────────────────────────────────────
+function setMode(m) {
+  mode = m;
+  document.getElementById('mb-practice').classList.toggle('on', m === 'practice');
+  document.getElementById('mb-assess').classList.toggle('on', m === 'assessment');
+  document.getElementById('timer-row').style.display = m === 'practice' ? '' : 'none';
+  document.getElementById('btn-start').textContent = m === 'practice' ? 'Start Practice Test →' : 'Start Assessment →';
+}
+
+function startTest() {
+  if (mode === 'assessment') timerSecs = 0;
+  sessionStart = Date.now();
+  secIdx = 0; qIdx = 0; totalScore = 0; totalDone = 0;
+  sScores = SECTIONS.map(() => ({c:0,t:0}));
+  show('sq');
+  render();
+}
+
+// ─────────────────────────────────────────────
+//  RENDER QUESTION
+// ─────────────────────────────────────────────
+function render() {
+  answered = false;
+  const sec = SECTIONS[secIdx];
+  if      (sec.type === 'perceptual') currentQ = genPerceptual();
+  else if (sec.type === 'number')     currentQ = genNumber();
+  else if (sec.type === 'spatial')    currentQ = genSpatial();
+  else if (sec.type === 'reasoning')  currentQ = genReasoning();
+  else                                currentQ = genWord();
+  const q = currentQ;
+  const total = QS_PER_SECTION;
+
+  document.getElementById('qtag').textContent = sec.tag;
+  document.getElementById('qpt').textContent  = `Q${qIdx+1} of ${total} · ${sec.name}`;
+  document.getElementById('qsc').textContent  = `Score: ${totalScore}/${totalDone}`;
+  document.getElementById('qpf').style.width  = `${(qIdx / total) * 100}%`;
+
+  const body = document.getElementById('qbody');
+  if      (sec.type === 'reasoning')  body.innerHTML = htmlReasoning(q);
+  else if (sec.type === 'perceptual') body.innerHTML = htmlPerceptual(q);
+  else if (sec.type === 'number')     body.innerHTML = htmlNumber(q);
+  else if (sec.type === 'word')       body.innerHTML = htmlWord(q);
+  else if (sec.type === 'spatial')    body.innerHTML = htmlSpatial(q);
+
+  startClock();
+}
+
+// ─────────────────────────────────────────────
+//  HTML BUILDERS
+// ─────────────────────────────────────────────
+function htmlReasoning(q) {
+  const btns = q.opts.map((o,i) =>
+    `<button class="nbtn" id="opt${i}" onclick="submit(${i})">${o}</button>`
+  ).join('');
+  return `<div class="qlabel">Reasoning</div>
+    <div class="r-stmt">${q.stmt}</div>
+    <div class="r-q">${q.q}</div>
+    <div class="r-btns">${btns}</div>
+    <div style="font-size:.75rem;color:var(--muted);margin-top:1.25rem;text-align:center">Keyboard: <kbd>1</kbd> or <kbd>2</kbd></div>`;
+}
+
+function htmlPerceptual(q) {
+  const cols = q.top.map((t,i) =>
+    `<div class="perc-col"><div class="pc-top">${t}</div><div class="pc-bot">${q.bot[i]}</div></div>`
+  ).join('');
+  const btns = [0,1,2,3,4].map(n =>
+    `<button class="cbtn" id="opt${n}" onclick="submit(${n})">${n}</button>`
+  ).join('');
+  return `<div class="qlabel">Perceptual Speed</div>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.25rem;text-align:center">
+      How many column pairs share the same letter? (A = a)
+    </p>
+    <div class="perc-wrap">${cols}</div>
+    <div class="count-btns">${btns}</div>
+    <div style="font-size:.75rem;color:var(--muted);margin-top:1.25rem;text-align:center">Keyboard: <kbd>0</kbd>–<kbd>4</kbd></div>`;
+}
+
+function htmlNumber(q) {
+  const btns = q.nums.map((n,i) =>
+    `<button class="numbtn" id="opt${i}" onclick="submit(${i})">${n}</button>`
+  ).join('');
+  return `<div class="qlabel">Number Speed &amp; Accuracy</div>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.5rem;text-align:center">
+      Find the <strong>middle</strong> number, then click whichever of the other two is <strong>furthest</strong> from it.
+    </p>
+    <div class="num-btns">${btns}</div>
+    <div style="font-size:.75rem;color:var(--muted);margin-top:1.5rem;text-align:center">Keyboard: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></div>`;
+}
+
+function htmlWord(q) {
+  const btns = q.words.map((w,i) =>
+    `<button class="wbtn" id="opt${i}" onclick="submit(${i})">${w}</button>`
+  ).join('');
+  return `<div class="qlabel">Word Meaning</div>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.5rem;text-align:center">
+      Two words are related (same meaning or opposites). Click the <strong>odd one out</strong>.
+    </p>
+    <div class="word-btns">${btns}</div>
+    <div style="font-size:.75rem;color:var(--muted);margin-top:1.25rem;text-align:center">Keyboard: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></div>`;
+}
+
+function htmlSpatial(q) {
+  const boxes = q.boxes.map(([tc,tr,bc,br]) =>
+    `<div class="sp-box">
+      <div class="sp-sym" style="transform:rotate(${tr}deg)">${tc}</div>
+      <div class="sp-div"></div>
+      <div class="sp-sym" style="transform:rotate(${br}deg)">${bc}</div>
+    </div>`
+  ).join('');
+  const btns = [0,1,2].map(n =>
+    `<button class="spbtn" id="opt${n}" onclick="submit(${n})">${n}</button>`
+  ).join('');
+  return `<div class="qlabel">Spatial Visualisation</div>
+    <p class="sp-note">
+      Mirror pairs (<strong>R/Я</strong>, <strong>b/d</strong>, <strong>p/q</strong>) never match each other — only the same character matches.<br>
+      How many boxes contain a <strong>matching pair</strong>?
+    </p>
+    <div class="sp-boxes">${boxes}</div>
+    <div class="sp-btns">${btns}</div>
+    <div style="font-size:.75rem;color:var(--muted);margin-top:1.25rem;text-align:center">Keyboard: <kbd>0</kbd> <kbd>1</kbd> <kbd>2</kbd></div>`;
+}
+
+// ─────────────────────────────────────────────
+//  CLOCK
+// ─────────────────────────────────────────────
+function startClock() {
+  clearClock();
+  const tmr = document.getElementById('qtmr');
+  const bar = document.getElementById('tbf');
+  if (mode === 'assessment') {
+    bar.style.width = '100%';
+    bar.style.background = 'var(--p)';
+    const updateElapsed = () => {
+      const e = Math.round((Date.now() - sessionStart) / 1000);
+      tmr.textContent = `${Math.floor(e/60)}:${String(e%60).padStart(2,'0')}`;
+      tmr.className = 'qtimer';
+    };
+    updateElapsed();
+    tmrInt = setInterval(updateElapsed, 1000);
+    return;
+  }
+  if (!timerSecs) {
+    tmr.textContent = '';
+    bar.style.width = '100%';
+    bar.style.background = 'var(--p)';
+    return;
+  }
+  timeLeft = timerSecs;
+  tick(tmr, bar);
+  tmrInt = setInterval(() => {
+    timeLeft--;
+    tick(tmr, bar);
+    if (timeLeft <= 0) { clearClock(); submit(-1); }
+  }, 1000);
+}
+
+function tick(tmr, bar) {
+  tmr.textContent = timeLeft + 's';
+  tmr.className   = 'qtimer' + (timeLeft <= 3 ? ' urgent' : '');
+  const pct = (timeLeft / timerSecs) * 100;
+  bar.style.width  = pct + '%';
+  bar.style.background = timeLeft <= 3 ? 'var(--err)' : timeLeft <= Math.ceil(timerSecs/2) ? '#f59e0b' : 'var(--p)';
+}
+
+function clearClock() {
+  if (tmrInt) { clearInterval(tmrInt); tmrInt = null; }
+}
+
+// ─────────────────────────────────────────────
+//  SUBMIT ANSWER
+// ─────────────────────────────────────────────
+function submit(chosen) {
+  if (answered) return;
+  answered = true;
+  clearClock();
+
+  const sec   = SECTIONS[secIdx];
+  const q     = currentQ;
+  const correct = q.ans;
+  const isOk  = chosen === correct;
+
+  totalDone++;
+  sScores[secIdx].t++;
+  if (isOk) { totalScore++; sScores[secIdx].c++; }
+
+  // Highlight buttons
+  const chosenEl  = chosen >= 0 ? document.getElementById('opt' + chosen) : null;
+  const correctEl = document.getElementById('opt' + correct);
+  document.querySelectorAll('[id^=opt]').forEach(b => b.disabled = true);
+  if (chosenEl)  chosenEl.classList.add(isOk ? 'sel-ok' : 'sel-err');
+  if (!isOk && correctEl) correctEl.classList.add('reveal-ok');
+
+  // Correct answer text for display
+  let correctLabel = '';
+  if (sec.type === 'reasoning')  correctLabel = q.opts[correct];
+  else if (sec.type === 'number') correctLabel = q.nums[correct];
+  else if (sec.type === 'word')   correctLabel = q.words[correct];
+  else                            correctLabel = correct;
+
+  setTimeout(() => showFeedback(isOk, chosen, correctLabel, q.exp), 180);
+}
+
+// ─────────────────────────────────────────────
+//  FEEDBACK OVERLAY
+// ─────────────────────────────────────────────
+function showFeedback(isOk, chosen, correctLabel, exp) {
+  const isLast = secIdx === SECTIONS.length - 1 && qIdx === QS_PER_SECTION - 1;
+
+  const icon  = isOk ? '✅' : chosen === -1 ? '⏰' : '❌';
+  const title = isOk ? 'Correct!'  : chosen === -1 ? "Time's Up!" : 'Incorrect';
+  const ansHtml = isOk ? '' :
+    `<div class="fb-ans">Correct answer: <strong>${correctLabel}</strong></div>`;
+
+  const div = document.createElement('div');
+  div.className = 'fb-overlay';
+  div.innerHTML = `<div class="fb-card">
+    <div class="fb-icon">${icon}</div>
+    <div class="fb-title ${isOk?'ok':'err'}">${title}</div>
+    ${ansHtml}
+    <div class="fb-exp">${exp}</div>
+    <button class="btn-next" onclick="next()">${isLast ? 'See Results →' : 'Next Question →'}</button>
+  </div>`;
+  document.body.appendChild(div);
+}
+
+// ─────────────────────────────────────────────
+//  NEXT
+// ─────────────────────────────────────────────
+function next() {
+  document.querySelector('.fb-overlay')?.remove();
+  const sec = SECTIONS[secIdx];
+  if (qIdx < QS_PER_SECTION - 1) {
+    qIdx++;
+    render();
+  } else if (secIdx < SECTIONS.length - 1) {
+    secIdx++;
+    qIdx = 0;
+    render();
+  } else {
+    showResults();
+  }
+}
+
+// ─────────────────────────────────────────────
+//  RESULTS
+// ─────────────────────────────────────────────
+function showResults() {
+  show('sr');
+  const elapsed = Math.round((Date.now() - sessionStart) / 1000);
+  const pct = Math.round((totalScore / totalQ) * 100);
+  document.getElementById('res-title').textContent = mode === 'assessment' ? 'Assessment Complete!' : 'Practice Complete!';
+  document.getElementById('rpct').textContent = pct + '%';
+  const timeEl = document.getElementById('res-time');
+  const assessEl = document.getElementById('res-assess');
+  if (mode === 'assessment') {
+    const m = Math.floor(elapsed / 60), s = elapsed % 60;
+    timeEl.textContent = `Time: ${m}m ${s}s  ·  ${totalScore}/${totalQ} correct`;
+    timeEl.style.display = '';
+
+    // Time-adjusted scoring
+    // Paper finding: accuracy drops ~9% per doubling of time vs benchmark pace
+    // (3.4% drop at 1.43× slower; 18.7% drop at ~2.9× slower — Raven's APM speeded test study)
+    // GIA benchmark: ~8 sec/question (average pace on real GIA, 200 q in ~20 min)
+    const secPerQ = elapsed / totalQ;
+    const giaSecPerQ = 8;
+    const slowRatio = Math.max(1, secPerQ / giaSecPerQ);
+    const timePenalty = Math.min(0.30, 0.09 * Math.log2(slowRatio));
+    const rawAcc = totalScore / totalQ;
+    const adjAcc = rawAcc * (1 - timePenalty);
+
+    // GIA score estimate (mean 100, SD 15)
+    // Benchmark: ~55% adjusted accuracy at average GIA pace, SD ~12pp
+    const giaEst = Math.round(100 + 15 * (adjAcc - 0.55) / 0.12);
+    const giaScore = Math.max(60, Math.min(145, giaEst));
+
+    const band = giaScore >= 130 ? 'Exceptional'
+               : giaScore >= 115 ? 'Above average'
+               : giaScore >= 85  ? 'Average'
+               : giaScore >= 70  ? 'Below average'
+               :                   'Low';
+
+    document.getElementById('res-pace').textContent = secPerQ.toFixed(1) + 's';
+    document.getElementById('res-adj').textContent  = Math.round(adjAcc * 100) + '%';
+    document.getElementById('res-gia').textContent  = giaScore;
+    document.getElementById('res-band').textContent = band;
+    assessEl.style.display = '';
+  } else {
+    assessEl.style.display = 'none';
+  }
+
+  const msgs = mode === 'assessment' ? [
+    [130, "Exceptional result — well above the GIA average."],
+    [115, "Above average — strong performance under assessment conditions."],
+    [85,  "Average range — consistent with typical GIA candidates."],
+    [0,   "Below average — practise speed and accuracy together for improvement."]
+  ] : [
+    [90, "Outstanding! You're well prepared for the real GIA."],
+    [75, "Great performance! A bit more practice and you'll ace it."],
+    [60, "Good foundation. Focus on your weaker sections for improvement."],
+    [0,  "Keep practising — review the explanations to build speed and confidence."]
+  ];
+  const msgScore = mode === 'assessment'
+    ? Math.max(60, Math.min(145, Math.round(100 + 15 * (((totalScore/totalQ)*(1-Math.min(0.30,0.09*Math.log2(Math.max(1,(elapsed/totalQ)/8)))))-0.55)/0.12)))
+    : pct;
+  document.getElementById('rmsg').textContent =
+    msgs.find(([t]) => msgScore >= t)[1];
+
+  document.getElementById('rscores').innerHTML = SECTIONS.map((sec, i) => {
+    const s = sScores[i];
+    const p = s.t > 0 ? Math.round((s.c / s.t) * 100) : 0;
+    return `<div class="ssr">
+      <div class="ssr-hdr">
+        <span class="ssr-name">${sec.name}</span>
+        <span class="ssr-val">${s.c}/${s.t} (${p}%)</span>
+      </div>
+      <div class="ssr-bar"><div class="ssr-fill" style="width:${p}%;background:${sec.color}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────
+//  KEYBOARD SHORTCUTS
+// ─────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('sq').classList.contains('active')) return;
+
+  // Next on Enter/Space when feedback is showing
+  if ((e.key === 'Enter' || e.key === ' ') && document.querySelector('.fb-overlay')) {
+    e.preventDefault(); next(); return;
+  }
+
+  if (answered) return;
+  const sec = SECTIONS[secIdx];
+  const k   = e.key;
+
+  if (sec.type === 'reasoning') {
+    if (k==='1') submit(0);
+    else if (k==='2') submit(1);
+  } else if (sec.type === 'perceptual') {
+    if (['0','1','2','3','4'].includes(k)) submit(parseInt(k));
+  } else if (sec.type === 'number' || sec.type === 'word') {
+    if (k==='1') submit(0);
+    else if (k==='2') submit(1);
+    else if (k==='3') submit(2);
+  } else if (sec.type === 'spatial') {
+    if (['0','1','2'].includes(k)) submit(parseInt(k));
+  }
+});
+</script>
+</body>
+</html>
