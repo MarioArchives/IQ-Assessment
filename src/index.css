@@ -1,0 +1,19 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p:#0d9488;--pl:#14b8a6;--pd:#0f766e;--pb:#f0fdfa;
+  --navy:#1e3a5f;--navyl:#2d5282;
+  --ok:#16a34a;--okbg:#dcfce7;
+  --err:#dc2626;--errbg:#fee2e2;
+  --bg:#f8fafc;--card:#fff;--txt:#1e293b;--muted:#64748b;--bdr:#e2e8f0;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;line-height:1.5}
+
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes slideup{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes pulse{to{transform:scale(1.12)}}
+
+@media(max-width:480px){
+  .w-title{font-size:1.9rem}
+  .num-btns{gap:.6rem}.numbtn{padding:1rem 1.25rem;font-size:1.5rem}
+  .sp-boxes{gap:.85rem}.sp-sym{font-size:2rem;width:48px;height:48px}
+}

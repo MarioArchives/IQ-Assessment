@@ -1,0 +1,5 @@
+.r-stmt{background:#eef4fb;border:2px solid #b8d0ea;border-radius:12px;padding:1.4rem 1.75rem;font-size:1.25rem;font-weight:700;text-align:center;color:var(--navy);margin-bottom:1.25rem;width:100%}
+.r-q{font-size:1rem;color:var(--muted);margin-bottom:1.5rem;text-align:center}
+.r-btns{display:flex;gap:.85rem;width:100%}
+.nbtn{flex:1;background:var(--navy);color:#fff;border:none;padding:1rem;border-radius:10px;font-size:1.05rem;font-weight:600;cursor:pointer;transition:all .15s}
+.nbtn:hover:not(:disabled){background:var(--navyl);transform:translateY(-1px)}

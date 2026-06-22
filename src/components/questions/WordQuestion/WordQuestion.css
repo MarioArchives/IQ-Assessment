@@ -1,0 +1,3 @@
+.word-btns{display:flex;gap:.75rem;width:100%;justify-content:center;flex-wrap:wrap}
+.wbtn{background:var(--navy);color:#fff;border:none;padding:1.2rem 1.5rem;border-radius:10px;font-size:1.05rem;font-weight:600;cursor:pointer;min-width:5.5rem;transition:all .15s}
+.wbtn:hover:not(:disabled){background:var(--navyl);transform:translateY(-1px)}

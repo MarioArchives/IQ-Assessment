@@ -1,0 +1,10 @@
+.qhdr{background:#fff;border-bottom:1px solid var(--bdr);padding:.7rem 1.25rem;display:flex;align-items:center;gap:.85rem;position:sticky;top:0;z-index:10}
+.qtag{font-size:.75rem;font-weight:700;color:var(--p);background:var(--pb);padding:.25rem .75rem;border-radius:999px;white-space:nowrap}
+.qprog{flex:1;display:flex;flex-direction:column;gap:.22rem}
+.qprog-txt{font-size:.72rem;color:var(--muted);display:flex;justify-content:space-between}
+.qprog-bar{height:5px;background:var(--bdr);border-radius:3px;overflow:hidden}
+.qprog-fill{height:100%;background:linear-gradient(90deg,var(--p),var(--pl));border-radius:3px;transition:width .3s}
+.qtimer{font-size:.95rem;font-weight:700;color:var(--txt);min-width:2.25rem;text-align:right}
+.qtimer.urgent{color:var(--err);animation:pulse .5s ease infinite alternate}
+.tbar{height:3px;background:var(--bdr)}
+.tbar-fill{height:100%;transition:width 1s linear}

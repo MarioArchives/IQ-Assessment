@@ -1,0 +1,18 @@
+#sw{background:linear-gradient(140deg,#0d9488 0%,#0f766e 55%,#1e3a5f 100%);align-items:center;justify-content:center;padding:2rem;text-align:center;display:flex;flex-direction:column;min-height:100vh}
+.w-icon{font-size:3.5rem;margin-bottom:.75rem}
+.w-title{font-size:2.4rem;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:.4rem}
+.w-sub{font-size:1rem;color:rgba(255,255,255,.82);max-width:460px;margin:.5rem auto 2rem}
+.pills{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem}
+.pill{background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.28);padding:.35rem .9rem;border-radius:999px;font-size:.8rem;font-weight:500}
+.toggle-row{display:flex;align-items:center;gap:.75rem;justify-content:center;margin-bottom:1.75rem;flex-wrap:wrap}
+.toggle-row label{color:rgba(255,255,255,.8);font-size:.875rem;font-weight:500}
+.tg{display:flex;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);border-radius:8px;overflow:hidden}
+.tg button{background:none;border:none;color:rgba(255,255,255,.65);padding:.45rem 1.1rem;cursor:pointer;font-size:.85rem;font-weight:500;transition:all .15s}
+.tg button.on{background:rgba(255,255,255,.22);color:#fff}
+.btn-start{background:#fff;color:var(--pd);border:none;padding:.9rem 2.75rem;border-radius:12px;font-size:1.05rem;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.18);transition:all .2s}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.22)}
+.mode-row{display:flex;gap:.35rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:.3rem;margin-bottom:1.5rem}
+.mode-btn{flex:1;padding:.55rem 1.25rem;border:none;border-radius:7px;font-size:.9rem;font-weight:600;cursor:pointer;color:rgba(255,255,255,.55);background:transparent;transition:all .2s}
+.mode-btn.on{background:rgba(255,255,255,.2);color:#fff}
+.w-stats{display:flex;gap:2.25rem;color:rgba(255,255,255,.72);font-size:.82rem;margin-top:1.75rem;justify-content:center}
+.w-stats strong{display:block;font-size:1.3rem;font-weight:700;color:#fff}

@@ -1,0 +1,9 @@
+#sq{flex-direction:column;display:flex;min-height:100vh}
+.qbody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.25rem;max-width:660px;margin:0 auto;width:100%}
+.qlabel{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem}
+
+/* ── ANSWER STATES ── */
+.sel-ok{background:var(--ok)!important;transform:none!important}
+.sel-err{background:var(--err)!important;transform:none!important}
+.reveal-ok{background:var(--ok)!important;box-shadow:0 0 0 3px rgba(22,163,74,.3)!important;transform:none!important}
+button:disabled{opacity:.6;cursor:default}
