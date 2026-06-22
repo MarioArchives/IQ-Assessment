@@ -34,10 +34,15 @@ function QuestionScreen({
   const [barColor, setBarColor] = useState('var(--p)');
 
   const answeredRef = useRef(false);
+  const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   function handleAnswer(idx: number) {
     if (answeredRef.current) return;
     answeredRef.current = true;
+    if (timerIntervalRef.current !== null) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+    }
     setAnswered(true);
     setChosen(idx);
     const isCorrect = idx !== -1 && idx === question.ans;
@@ -47,8 +52,6 @@ function QuestionScreen({
 
   // Timer effect
   useEffect(() => {
-    let intervalId: ReturnType<typeof setInterval> | null = null;
-
     if (mode === 'assessment') {
       setBarWidth(100);
       setBarColor('var(--p)');
@@ -58,7 +61,7 @@ function QuestionScreen({
         setTimerUrgent(false);
       };
       updateElapsed();
-      intervalId = setInterval(updateElapsed, 1000);
+      timerIntervalRef.current = setInterval(updateElapsed, 1000);
     } else if (timerSecs === 0) {
       setTimerDisplay('');
       setBarWidth(100);
@@ -83,11 +86,14 @@ function QuestionScreen({
 
       tick();
 
-      intervalId = setInterval(() => {
+      timerIntervalRef.current = setInterval(() => {
         timeLeft--;
         tick();
         if (timeLeft <= 0) {
-          if (intervalId !== null) clearInterval(intervalId);
+          if (timerIntervalRef.current !== null) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
+          }
           if (!answeredRef.current) {
             handleAnswer(-1);
           }
@@ -96,7 +102,10 @@ function QuestionScreen({
     }
 
     return () => {
-      if (intervalId !== null) clearInterval(intervalId);
+      if (timerIntervalRef.current !== null) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -15,7 +15,7 @@ function WelcomeScreen({ onStart }: WelcomeScreenProps) {
     <div id="sw">
       <div className="w-icon">🧠</div>
       <h1 className="w-title">Thomas GIA Practice</h1>
-      <p className="w-sub">250 authentic GIA-style questions across all five task types — timed just like the real assessment.</p>
+      <p className="w-sub">300 authentic GIA-style questions across all five task types — timed just like the real assessment.</p>
       <div className="pills">
         <span className="pill">Task 1 · Reasoning</span>
         <span className="pill">Task 2 · Perceptual Speed</span>
@@ -51,7 +51,7 @@ function WelcomeScreen({ onStart }: WelcomeScreenProps) {
         {mode === 'practice' ? 'Start Practice Test →' : 'Start Assessment →'}
       </button>
       <div className="w-stats">
-        <div><strong>250</strong>Questions</div>
+        <div><strong>300</strong>Questions</div>
         <div><strong>5</strong>Task Types</div>
         <div><strong>~10 min</strong>Estimated</div>
       </div>
