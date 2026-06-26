@@ -1,15 +1,16 @@
 import './NumberQuestion.css';
 import { NumberQuestionProps } from '../../../props';
 
-function btnClass(answered: boolean, idx: number, chosen: number | null, ans: number): string {
+function btnClass(answered: boolean, idx: number, chosen: number | null, ans: number, hideCorrect: boolean): string {
   if (!answered) return 'numbtn';
+  if (hideCorrect) return idx === chosen ? 'numbtn sel-chosen' : 'numbtn';
   if (idx === chosen && idx === ans) return 'numbtn sel-ok';
   if (idx === chosen && idx !== ans) return 'numbtn sel-err';
   if (idx !== chosen && idx === ans) return 'numbtn reveal-ok';
   return 'numbtn';
 }
 
-function NumberQuestion({ question, answered, chosen, onAnswer }: NumberQuestionProps) {
+function NumberQuestion({ question, answered, chosen, hideCorrect, onAnswer }: NumberQuestionProps) {
   return (
     <>
       <div className="qlabel">Number Speed &amp; Accuracy</div>
@@ -20,7 +21,7 @@ function NumberQuestion({ question, answered, chosen, onAnswer }: NumberQuestion
         {question.nums.map((n, i) => (
           <button
             key={i}
-            className={btnClass(answered, i, chosen, question.ans)}
+            className={btnClass(answered, i, chosen, question.ans, hideCorrect)}
             disabled={answered}
             onClick={() => onAnswer(i)}
           >

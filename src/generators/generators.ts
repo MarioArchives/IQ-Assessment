@@ -57,10 +57,15 @@ export function genSpatial(): SpatialQ {
   const degs = [0, 90, 180, 270];
   const rc = () => pair[Math.floor(Math.random() * 2)];
   const rd = () => degs[Math.floor(Math.random() * 4)];
-  const boxes: [[string, number, string, number], [string, number, string, number]] = [
-    [rc(), rd(), rc(), rd()],
-    [rc(), rd(), rc(), rd()],
-  ];
+  const rdDiff = (exclude: number) => {
+    const rest = degs.filter(d => d !== exclude);
+    return rest[Math.floor(Math.random() * rest.length)];
+  };
+  const makeBox = (): [string, number, string, number] => {
+    const tr = rd();
+    return [rc(), tr, rc(), rdDiff(tr)];
+  };
+  const boxes: [[string, number, string, number], [string, number, string, number]] = [makeBox(), makeBox()];
   const ans = boxes.filter(b => b[0] === b[2]).length;
   const exp = boxes.map((b, i) =>
     `Box ${i + 1}: ${b[0]}(${b[1]}°) & ${b[2]}(${b[3]}°) — ${b[0] === b[2] ? 'match ✓' : 'no match ✗'}`

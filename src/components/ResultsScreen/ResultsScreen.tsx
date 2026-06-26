@@ -1,7 +1,55 @@
+import { useState } from 'react';
 import './ResultsScreen.css';
-import { ResultsScreenProps } from '../../props';
+import { ResultsScreenProps, AnsweredQuestion, Question } from '../../props';
 
-function ResultsScreen({ mode, totalScore, totalDone, elapsed, sScores, sections, onRestart }: ResultsScreenProps) {
+type Filter = 'all' | 'correct' | 'wrong' | 'unanswered';
+
+function getAnswerLabel(q: Question, idx: number): string {
+  if (idx === -1) return '–';
+  switch (q.type) {
+    case 'reasoning':  return q.opts[idx] ?? '?';
+    case 'number':     return String(q.nums[idx] ?? '?');
+    case 'word':       return q.words[idx] ?? '?';
+    case 'perceptual': return String(idx);
+    case 'spatial':    return String(idx);
+  }
+}
+
+function getQuestionText(q: Question): string {
+  switch (q.type) {
+    case 'reasoning':  return q.q;
+    case 'number':     return q.nums.join(' · ');
+    case 'word':       return q.words.join(' · ');
+    case 'perceptual': return `${q.top.join('')} / ${q.bot.join('')}`;
+    case 'spatial':    return 'Spatial pairs';
+  }
+}
+
+function SummaryRow({ aq }: { aq: AnsweredQuestion }) {
+  const status = aq.isCorrect ? 'ok' : aq.chosen === -1 ? 'skip' : 'err';
+  const icon = aq.isCorrect ? '✓' : aq.chosen === -1 ? '–' : '✗';
+  return (
+    <div className={`sum-row ${status}`}>
+      <div className="sum-icon">{icon}</div>
+      <div className="sum-body">
+        <div className="sum-ref">{aq.sectionName} · Q{aq.qNum}</div>
+        <div className="sum-q">{getQuestionText(aq.question)}</div>
+        {!aq.isCorrect && (
+          <div className="sum-ans">
+            {aq.chosen === -1
+              ? 'Skipped'
+              : `Your answer: ${getAnswerLabel(aq.question, aq.chosen)}`}
+            {' '}· Correct: <strong>{getAnswerLabel(aq.question, aq.question.ans)}</strong>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ResultsScreen({ mode, totalScore, totalDone, elapsed, sScores, sections, answeredQuestions, onRestart }: ResultsScreenProps) {
+  const [filter, setFilter] = useState<Filter>('all');
+
   const pct = Math.round((totalScore / totalDone) * 100);
 
   // GIA scoring
@@ -40,11 +88,33 @@ function ResultsScreen({ mode, totalScore, totalDone, elapsed, sScores, sections
   const m = Math.floor(elapsed / 60);
   const s = elapsed % 60;
 
+  // Summary filter counts
+  const counts: Record<Filter, number> = {
+    all: answeredQuestions.length,
+    correct: answeredQuestions.filter(aq => aq.isCorrect).length,
+    wrong: answeredQuestions.filter(aq => !aq.isCorrect && aq.chosen !== -1).length,
+    unanswered: answeredQuestions.filter(aq => aq.chosen === -1).length,
+  };
+
+  const filtered = answeredQuestions.filter(aq => {
+    if (filter === 'correct') return aq.isCorrect;
+    if (filter === 'wrong') return !aq.isCorrect && aq.chosen !== -1;
+    if (filter === 'unanswered') return aq.chosen === -1;
+    return true;
+  });
+
+  const filterLabels: Record<Filter, string> = {
+    all: 'All',
+    correct: 'Correct',
+    wrong: 'Wrong',
+    unanswered: 'Unanswered',
+  };
+
   return (
     <div id="sr">
       <div className="res-card">
         <h2 className="res-title">{mode === 'assessment' ? 'Assessment Complete!' : 'Practice Complete!'}</h2>
-        <p className="res-sub">Here's how you performed across all 5 tasks</p>
+        <p className="res-sub">Here's how you performed across {sections.length === 5 ? 'all 5' : `${sections.length}`} task{sections.length !== 1 ? 's' : ''}</p>
         <div className="score-ring">
           <div className="ring-pct">{pct}%</div>
           <div className="ring-lbl">Correct</div>
@@ -95,6 +165,32 @@ function ResultsScreen({ mode, totalScore, totalDone, elapsed, sScores, sections
         </div>
 
         <div className="res-msg">{msg}</div>
+
+        {mode === 'assessment' && answeredQuestions.length > 0 && (
+          <div className="sum-section">
+            <h3 className="sum-title">Question Review</h3>
+            <div className="sum-filters">
+              {(['all', 'correct', 'wrong', 'unanswered'] as Filter[]).map(f => (
+                <button
+                  key={f}
+                  className={`sum-filter-btn${filter === f ? ' active' : ''}`}
+                  onClick={() => setFilter(f)}
+                >
+                  {filterLabels[f]}
+                  <span className="sum-count">{counts[f]}</span>
+                </button>
+              ))}
+            </div>
+            <div className="sum-list">
+              {filtered.length === 0 ? (
+                <div className="sum-empty">No questions in this category.</div>
+              ) : (
+                filtered.map((aq, i) => <SummaryRow key={i} aq={aq} />)
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="res-acts">
           <button className="btn-restart" onClick={onRestart}>Try Again</button>
         </div>

@@ -22,3 +22,26 @@
 .assess-lbl{font-size:.68rem;color:var(--muted);margin-top:.15rem;line-height:1.3}
 .assess-band{text-align:center;font-size:1.05rem;font-weight:700;color:var(--p);margin:.6rem 0 .25rem}
 .assess-note{font-size:.68rem;color:var(--muted);text-align:center;line-height:1.45;max-width:340px;margin:0 auto 1rem}
+
+/* ── QUESTION SUMMARY ── */
+.sum-section{margin-bottom:1.5rem}
+.sum-title{font-size:1rem;font-weight:700;margin-bottom:.75rem;color:var(--navy)}
+.sum-filters{display:flex;gap:.4rem;margin-bottom:.75rem;flex-wrap:wrap}
+.sum-filter-btn{flex:1;min-width:70px;background:var(--bg);border:1.5px solid var(--bdr);border-radius:8px;padding:.4rem .5rem;font-size:.78rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:.1rem}
+.sum-filter-btn.active{background:var(--p);border-color:var(--p);color:#fff}
+.sum-filter-btn:hover:not(.active){border-color:var(--p);color:var(--p)}
+.sum-count{font-size:.7rem;font-weight:700;opacity:.8}
+.sum-list{display:flex;flex-direction:column;gap:.4rem;max-height:380px;overflow-y:auto;border:1px solid var(--bdr);border-radius:10px;padding:.5rem}
+.sum-empty{text-align:center;color:var(--muted);font-size:.85rem;padding:1.5rem 0}
+.sum-row{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem .6rem;border-radius:8px;background:var(--bg)}
+.sum-row.ok{border-left:3px solid var(--ok)}
+.sum-row.err{border-left:3px solid var(--err)}
+.sum-row.skip{border-left:3px solid var(--bdr)}
+.sum-icon{font-size:.85rem;font-weight:700;min-width:16px;margin-top:.1rem}
+.sum-row.ok .sum-icon{color:var(--ok)}
+.sum-row.err .sum-icon{color:var(--err)}
+.sum-row.skip .sum-icon{color:var(--muted)}
+.sum-body{flex:1;min-width:0}
+.sum-ref{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.1rem}
+.sum-q{font-size:.82rem;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sum-ans{font-size:.75rem;color:var(--muted);margin-top:.15rem}

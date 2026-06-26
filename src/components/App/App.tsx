@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './App.css';
-import { Mode, View, TimerSecs, Question, SectionScore } from '../../props';
+import { Mode, View, TimerSecs, Question, SectionScore, AnsweredQuestion, Section } from '../../props';
 import { SECTIONS, QS_PER_SECTION } from '../../constants/data';
 import { generateQuestion } from '../../generators/generators';
 import WelcomeScreen from '../WelcomeScreen/WelcomeScreen';
@@ -19,18 +19,23 @@ function App() {
   const [sessionStart, setSessionStart] = useState(0);
   const [currentQ, setCurrentQ] = useState<Question | null>(null);
   const [elapsed, setElapsed] = useState(0);
+  const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([]);
+  const [activeSections, setActiveSections] = useState<Section[]>(SECTIONS);
 
-  function handleStart(m: Mode, ts: TimerSecs) {
+  function handleStart(m: Mode, ts: TimerSecs, selectedIds: string[]) {
+    const sections = SECTIONS.filter(s => selectedIds.includes(s.id));
     setMode(m);
     setTimerSecs(ts);
+    setActiveSections(sections);
     setSecIdx(0);
     setQIdx(0);
     setTotalScore(0);
     setTotalDone(0);
-    setSScores(SECTIONS.map(() => ({ c: 0, t: 0 })));
+    setSScores(sections.map(() => ({ c: 0, t: 0 })));
     setSessionStart(Date.now());
     setElapsed(0);
-    setCurrentQ(generateQuestion(SECTIONS[0].type));
+    setAnsweredQuestions([]);
+    setCurrentQ(generateQuestion(sections[0].type));
     setView('question');
   }
 
@@ -45,20 +50,31 @@ function App() {
     if (isCorrect) {
       setTotalScore(s => s + 1);
     }
-    // chosen is used to determine correctness; the actual tracking is isCorrect
-    void chosen;
+    if (currentQ !== null) {
+      const q = currentQ;
+      const si = secIdx;
+      const qi = qIdx;
+      setAnsweredQuestions(prev => [...prev, {
+        question: q,
+        chosen,
+        isCorrect,
+        sectionIdx: si,
+        sectionName: activeSections[si].name,
+        qNum: qi + 1,
+      }]);
+    }
   }
 
   function handleNext() {
     if (qIdx < QS_PER_SECTION - 1) {
       const nextQIdx = qIdx + 1;
       setQIdx(nextQIdx);
-      setCurrentQ(generateQuestion(SECTIONS[secIdx].type));
-    } else if (secIdx < SECTIONS.length - 1) {
+      setCurrentQ(generateQuestion(activeSections[secIdx].type));
+    } else if (secIdx < activeSections.length - 1) {
       const nextSecIdx = secIdx + 1;
       setSecIdx(nextSecIdx);
       setQIdx(0);
-      setCurrentQ(generateQuestion(SECTIONS[nextSecIdx].type));
+      setCurrentQ(generateQuestion(activeSections[nextSecIdx].type));
     } else {
       const e = Math.round((Date.now() - sessionStart) / 1000);
       setElapsed(e);
@@ -70,8 +86,8 @@ function App() {
     setView('welcome');
   }
 
-  const totalQ = QS_PER_SECTION * SECTIONS.length;
-  const isLast = secIdx === SECTIONS.length - 1 && qIdx === QS_PER_SECTION - 1;
+  const totalQ = QS_PER_SECTION * activeSections.length;
+  const isLast = secIdx === activeSections.length - 1 && qIdx === QS_PER_SECTION - 1;
 
   return (
     <>
@@ -81,7 +97,7 @@ function App() {
       {view === 'question' && currentQ !== null && (
         <QuestionScreen
           key={`${secIdx}-${qIdx}`}
-          section={SECTIONS[secIdx]}
+          section={activeSections[secIdx]}
           question={currentQ}
           qIdx={qIdx}
           qsPerSection={QS_PER_SECTION}
@@ -102,7 +118,8 @@ function App() {
           totalDone={totalQ}
           elapsed={elapsed}
           sScores={sScores}
-          sections={SECTIONS}
+          sections={activeSections}
+          answeredQuestions={answeredQuestions}
           onRestart={handleRestart}
         />
       )}

@@ -59,6 +59,15 @@ export interface SpatialQ {
 
 export type Question = ReasoningQ | PerceptualQ | NumberQ | WordQ | SpatialQ;
 
+export interface AnsweredQuestion {
+  question: Question;
+  chosen: number;
+  isCorrect: boolean;
+  sectionIdx: number;
+  sectionName: string;
+  qNum: number;
+}
+
 // Props interfaces for each component
 
 export interface AppProps {
@@ -66,7 +75,7 @@ export interface AppProps {
 }
 
 export interface WelcomeScreenProps {
-  onStart: (mode: Mode, timerSecs: TimerSecs) => void;
+  onStart: (mode: Mode, timerSecs: TimerSecs, selectedSectionIds: string[]) => void;
 }
 
 export interface ProgressHeaderProps {
@@ -113,6 +122,7 @@ export interface ReasoningQuestionProps {
   question: ReasoningQ;
   answered: boolean;
   chosen: number | null;
+  hideCorrect: boolean;
   onAnswer: (idx: number) => void;
 }
 
@@ -120,6 +130,7 @@ export interface PerceptualQuestionProps {
   question: PerceptualQ;
   answered: boolean;
   chosen: number | null;
+  hideCorrect: boolean;
   onAnswer: (idx: number) => void;
 }
 
@@ -127,6 +138,7 @@ export interface NumberQuestionProps {
   question: NumberQ;
   answered: boolean;
   chosen: number | null;
+  hideCorrect: boolean;
   onAnswer: (idx: number) => void;
 }
 
@@ -134,6 +146,7 @@ export interface WordQuestionProps {
   question: WordQ;
   answered: boolean;
   chosen: number | null;
+  hideCorrect: boolean;
   onAnswer: (idx: number) => void;
 }
 
@@ -141,6 +154,7 @@ export interface SpatialQuestionProps {
   question: SpatialQ;
   answered: boolean;
   chosen: number | null;
+  hideCorrect: boolean;
   onAnswer: (idx: number) => void;
 }
 
@@ -151,5 +165,6 @@ export interface ResultsScreenProps {
   elapsed: number;
   sScores: SectionScore[];
   sections: Section[];
+  answeredQuestions: AnsweredQuestion[];
   onRestart: () => void;
 }

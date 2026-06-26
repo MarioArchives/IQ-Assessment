@@ -1,15 +1,16 @@
 import './ReasoningQuestion.css';
 import { ReasoningQuestionProps } from '../../../props';
 
-function btnClass(answered: boolean, idx: number, chosen: number | null, ans: number): string {
+function btnClass(answered: boolean, idx: number, chosen: number | null, ans: number, hideCorrect: boolean): string {
   if (!answered) return 'nbtn';
+  if (hideCorrect) return idx === chosen ? 'nbtn sel-chosen' : 'nbtn';
   if (idx === chosen && idx === ans) return 'nbtn sel-ok';
   if (idx === chosen && idx !== ans) return 'nbtn sel-err';
   if (idx !== chosen && idx === ans) return 'nbtn reveal-ok';
   return 'nbtn';
 }
 
-function ReasoningQuestion({ question, answered, chosen, onAnswer }: ReasoningQuestionProps) {
+function ReasoningQuestion({ question, answered, chosen, hideCorrect, onAnswer }: ReasoningQuestionProps) {
   return (
     <>
       <div className="qlabel">Reasoning</div>
@@ -19,7 +20,7 @@ function ReasoningQuestion({ question, answered, chosen, onAnswer }: ReasoningQu
         {question.opts.map((opt, i) => (
           <button
             key={i}
-            className={btnClass(answered, i, chosen, question.ans)}
+            className={btnClass(answered, i, chosen, question.ans, hideCorrect)}
             disabled={answered}
             onClick={() => onAnswer(i)}
           >

@@ -1,28 +1,55 @@
 import { useState } from 'react';
 import './WelcomeScreen.css';
 import { WelcomeScreenProps, Mode, TimerSecs } from '../../props';
+import { SECTIONS, QS_PER_SECTION } from '../../constants/data';
 
 function WelcomeScreen({ onStart }: WelcomeScreenProps) {
   const [mode, setMode] = useState<Mode>('practice');
   const [timerSecs, setTimerSecs] = useState<TimerSecs>(10);
+  const [selectedIds, setSelectedIds] = useState<string[]>(SECTIONS.map(s => s.id));
+
+  function toggleSection(id: string) {
+    setSelectedIds(prev => {
+      if (prev.includes(id)) {
+        if (prev.length === 1) return prev; // keep at least one
+        return prev.filter(x => x !== id);
+      }
+      return [...prev, id].sort((a, b) =>
+        SECTIONS.findIndex(s => s.id === a) - SECTIONS.findIndex(s => s.id === b)
+      );
+    });
+  }
 
   function handleStart() {
     const effectiveTimer: TimerSecs = mode === 'assessment' ? 0 : timerSecs;
-    onStart(mode, effectiveTimer);
+    onStart(mode, effectiveTimer, selectedIds);
   }
+
+  const totalQ = QS_PER_SECTION * selectedIds.length;
+  const estMin = selectedIds.length * 2;
 
   return (
     <div id="sw">
       <div className="w-icon">🧠</div>
       <h1 className="w-title">Thomas GIA Practice</h1>
-      <p className="w-sub">300 authentic GIA-style questions across all five task types — timed just like the real assessment.</p>
+      <p className="w-sub">Select tasks, choose a mode, and practise GIA-style questions timed like the real assessment.</p>
+
+      <div className="task-label">Tasks included</div>
       <div className="pills">
-        <span className="pill">Task 1 · Reasoning</span>
-        <span className="pill">Task 2 · Perceptual Speed</span>
-        <span className="pill">Task 3 · Number Speed</span>
-        <span className="pill">Task 4 · Word Meaning</span>
-        <span className="pill">Task 5 · Spatial Visualisation</span>
+        {SECTIONS.map((sec, i) => {
+          const active = selectedIds.includes(sec.id);
+          return (
+            <button
+              key={sec.id}
+              className={`pill${active ? ' active' : ''}`}
+              onClick={() => toggleSection(sec.id)}
+            >
+              Task {i + 1} · {sec.name}
+            </button>
+          );
+        })}
       </div>
+
       <div className="mode-row">
         <button
           className={`mode-btn${mode === 'practice' ? ' on' : ''}`}
@@ -51,9 +78,9 @@ function WelcomeScreen({ onStart }: WelcomeScreenProps) {
         {mode === 'practice' ? 'Start Practice Test →' : 'Start Assessment →'}
       </button>
       <div className="w-stats">
-        <div><strong>300</strong>Questions</div>
-        <div><strong>5</strong>Task Types</div>
-        <div><strong>~10 min</strong>Estimated</div>
+        <div><strong>{totalQ}</strong>Questions</div>
+        <div><strong>{selectedIds.length}</strong>Task Types</div>
+        <div><strong>~{estMin} min</strong>Estimated</div>
       </div>
     </div>
   );

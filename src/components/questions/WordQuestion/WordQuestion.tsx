@@ -1,15 +1,16 @@
 import './WordQuestion.css';
 import { WordQuestionProps } from '../../../props';
 
-function btnClass(answered: boolean, idx: number, chosen: number | null, ans: number): string {
+function btnClass(answered: boolean, idx: number, chosen: number | null, ans: number, hideCorrect: boolean): string {
   if (!answered) return 'wbtn';
+  if (hideCorrect) return idx === chosen ? 'wbtn sel-chosen' : 'wbtn';
   if (idx === chosen && idx === ans) return 'wbtn sel-ok';
   if (idx === chosen && idx !== ans) return 'wbtn sel-err';
   if (idx !== chosen && idx === ans) return 'wbtn reveal-ok';
   return 'wbtn';
 }
 
-function WordQuestion({ question, answered, chosen, onAnswer }: WordQuestionProps) {
+function WordQuestion({ question, answered, chosen, hideCorrect, onAnswer }: WordQuestionProps) {
   return (
     <>
       <div className="qlabel">Word Meaning</div>
@@ -20,7 +21,7 @@ function WordQuestion({ question, answered, chosen, onAnswer }: WordQuestionProp
         {question.words.map((w, i) => (
           <button
             key={i}
-            className={btnClass(answered, i, chosen, question.ans)}
+            className={btnClass(answered, i, chosen, question.ans, hideCorrect)}
             disabled={answered}
             onClick={() => onAnswer(i)}
           >

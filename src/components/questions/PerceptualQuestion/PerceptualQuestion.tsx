@@ -1,15 +1,16 @@
 import './PerceptualQuestion.css';
 import { PerceptualQuestionProps } from '../../../props';
 
-function btnClass(answered: boolean, idx: number, chosen: number | null, ans: number): string {
+function btnClass(answered: boolean, idx: number, chosen: number | null, ans: number, hideCorrect: boolean): string {
   if (!answered) return 'cbtn';
+  if (hideCorrect) return idx === chosen ? 'cbtn sel-chosen' : 'cbtn';
   if (idx === chosen && idx === ans) return 'cbtn sel-ok';
   if (idx === chosen && idx !== ans) return 'cbtn sel-err';
   if (idx !== chosen && idx === ans) return 'cbtn reveal-ok';
   return 'cbtn';
 }
 
-function PerceptualQuestion({ question, answered, chosen, onAnswer }: PerceptualQuestionProps) {
+function PerceptualQuestion({ question, answered, chosen, hideCorrect, onAnswer }: PerceptualQuestionProps) {
   return (
     <>
       <div className="qlabel">Perceptual Speed</div>
@@ -28,7 +29,7 @@ function PerceptualQuestion({ question, answered, chosen, onAnswer }: Perceptual
         {[0, 1, 2, 3, 4].map(n => (
           <button
             key={n}
-            className={btnClass(answered, n, chosen, question.ans)}
+            className={btnClass(answered, n, chosen, question.ans, hideCorrect)}
             disabled={answered}
             onClick={() => onAnswer(n)}
           >

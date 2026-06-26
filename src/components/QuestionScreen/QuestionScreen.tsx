@@ -47,7 +47,11 @@ function QuestionScreen({
     setChosen(idx);
     const isCorrect = idx !== -1 && idx === question.ans;
     onSubmit(idx, isCorrect);
-    setTimeout(() => setShowFeedback(true), 180);
+    if (mode === 'assessment') {
+      setTimeout(() => onNext(), 300);
+    } else {
+      setTimeout(() => setShowFeedback(true), 180);
+    }
   }
 
   // Timer effect
@@ -179,6 +183,7 @@ function QuestionScreen({
             question={question}
             answered={answered}
             chosen={chosen}
+            hideCorrect={mode === 'assessment'}
             onAnswer={handleAnswer}
           />
         )}
@@ -187,6 +192,7 @@ function QuestionScreen({
             question={question}
             answered={answered}
             chosen={chosen}
+            hideCorrect={mode === 'assessment'}
             onAnswer={handleAnswer}
           />
         )}
@@ -195,6 +201,7 @@ function QuestionScreen({
             question={question}
             answered={answered}
             chosen={chosen}
+            hideCorrect={mode === 'assessment'}
             onAnswer={handleAnswer}
           />
         )}
@@ -203,6 +210,7 @@ function QuestionScreen({
             question={question}
             answered={answered}
             chosen={chosen}
+            hideCorrect={mode === 'assessment'}
             onAnswer={handleAnswer}
           />
         )}
@@ -211,10 +219,16 @@ function QuestionScreen({
             question={question}
             answered={answered}
             chosen={chosen}
+            hideCorrect={mode === 'assessment'}
             onAnswer={handleAnswer}
           />
         )}
       </div>
+      {mode === 'assessment' && !answered && (
+        <div className="skip-wrap">
+          <button className="btn-skip" onClick={() => handleAnswer(-1)}>Skip</button>
+        </div>
+      )}
       {showFeedback && (
         <FeedbackOverlay
           isOk={chosen !== null && chosen !== -1 && chosen === question.ans}

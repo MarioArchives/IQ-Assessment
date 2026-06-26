@@ -1,8 +1,21 @@
 .sp-note{font-size:.875rem;color:var(--muted);margin-bottom:1.5rem;text-align:center;line-height:1.6}
 .sp-boxes{display:flex;gap:1.5rem;margin-bottom:2rem}
-.sp-box{background:var(--pb);border:2px solid var(--pl);border-radius:12px;padding:1rem 1.25rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;min-width:90px}
+.sp-box{background:var(--pb);border:2px solid var(--pl);border-radius:12px;padding:1rem 1.25rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;min-width:90px;transition:background .3s ease,border-color .3s ease,opacity .3s ease}
 .sp-sym{font-size:2.5rem;font-weight:900;color:var(--navy);width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-family:'Georgia',serif;line-height:1}
-.sp-div{width:52px;height:2px;background:var(--bdr)}
+.sp-div{width:52px;height:2px;background:var(--bdr);transition:background .3s ease}
+.sp-div-match{background:var(--ok)}
 .sp-btns{display:flex;gap:.85rem}
 .spbtn{background:var(--navy);color:#fff;border:none;width:3.75rem;height:3.75rem;border-radius:10px;font-size:1.4rem;font-weight:700;cursor:pointer;transition:all .15s}
 .spbtn:hover:not(:disabled){background:var(--navyl);transform:translateY(-1px)}
+
+/* ── BOX REVEAL STATES ── */
+@keyframes matchPop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.07); }
+  100% { transform: scale(1); }
+}
+.sp-match{background:var(--okbg)!important;border-color:var(--ok)!important;animation:matchPop .35s ease-out}
+.sp-nomatch{opacity:.45}
+.sp-verdict{font-size:1rem;font-weight:800;margin-top:.1rem;animation:fadein .2s ease .35s both}
+.sp-v-ok{color:var(--ok)}
+.sp-v-err{color:var(--err)}

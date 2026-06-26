@@ -3,7 +3,23 @@
 .qlabel{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem}
 
 /* ── ANSWER STATES ── */
-.sel-ok{background:var(--ok)!important;transform:none!important}
-.sel-err{background:var(--err)!important;transform:none!important}
-.reveal-ok{background:var(--ok)!important;box-shadow:0 0 0 3px rgba(22,163,74,.3)!important;transform:none!important}
+@keyframes selPop {
+  0%   { transform: scale(1); }
+  38%  { transform: scale(1.09); }
+  100% { transform: scale(1); }
+}
+@keyframes revealPulse {
+  0%   { transform: scale(1);    opacity: .5; }
+  45%  { transform: scale(1.09); opacity: 1; }
+  100% { transform: scale(1);    opacity: 1; }
+}
+.sel-ok    { background:var(--ok)!important;  opacity:1!important; animation: selPop .24s ease-out; }
+.sel-err   { background:var(--err)!important; opacity:1!important; animation: selPop .24s ease-out; }
+.sel-chosen{ background:var(--p)!important;   opacity:1!important; animation: selPop .24s ease-out; }
+.reveal-ok { background:var(--ok)!important;  opacity:1!important; box-shadow:0 0 0 3px rgba(22,163,74,.3)!important; animation: revealPulse .34s ease-out; }
 button:disabled{opacity:.6;cursor:default}
+
+/* ── ASSESSMENT SKIP ── */
+.skip-wrap{display:flex;justify-content:center;padding:.75rem 1.25rem 1.5rem}
+.btn-skip{background:transparent;border:1.5px solid var(--bdr);color:var(--muted);padding:.5rem 1.5rem;border-radius:8px;font-size:.875rem;cursor:pointer;transition:all .15s}
+.btn-skip:hover{border-color:var(--muted);color:var(--txt)}
